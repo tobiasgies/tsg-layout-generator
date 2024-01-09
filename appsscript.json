@@ -1,0 +1,82 @@
+{
+  "timeZone": "America/New_York",
+  "dependencies": {
+  },
+  "exceptionLogging": "STACKDRIVER",
+  "runtimeVersion": "V8",
+  "sheets": {
+    "macros": [{
+      "menuName": "Sort Date",
+      "functionName": "SortDate"
+    }, {
+      "menuName": "DateState",
+      "functionName": "myFunction"
+    }, {
+      "menuName": "DateStateSupport",
+      "functionName": "DateStateSupport"
+    }, {
+      "menuName": "spreadsheet",
+      "functionName": "spreadsheet"
+    }, {
+      "menuName": "DateState",
+      "functionName": "DateState"
+    }, {
+      "menuName": "DateState2",
+      "functionName": "DateState2"
+    }, {
+      "menuName": "DateState3",
+      "functionName": "DateState3"
+    }, {
+      "menuName": "DateState4",
+      "functionName": "DateState4"
+    }, {
+      "menuName": "DateState5",
+      "functionName": "DateState5"
+    }, {
+      "menuName": "DateState6",
+      "functionName": "DateState6"
+    }, {
+      "menuName": "DateState",
+      "functionName": "DateState"
+    }, {
+      "menuName": "DateState2",
+      "functionName": "DateState2"
+    }, {
+      "menuName": "DateState",
+      "functionName": "DateState"
+    }, {
+      "menuName": "Sort Stats Host",
+      "functionName": "SortStatsHost"
+    }, {
+      "menuName": "Sort Stats Support",
+      "functionName": "SortStatsSupport"
+    }, {
+      "menuName": "DateState",
+      "functionName": "DateState"
+    }, {
+      "menuName": "Update Stats",
+      "functionName": "UpdateStats"
+    }, {
+      "menuName": "DateState 1",
+      "functionName": "DateState1"
+    }, {
+      "menuName": "DateState2",
+      "functionName": "DateState2"
+    }, {
+      "menuName": "DateState2",
+      "functionName": "DateState2"
+    }, {
+      "menuName": "StatsLeague",
+      "functionName": "StatsLeague"
+    }, {
+      "menuName": "Untitled Macro",
+      "functionName": "UntitledMacro"
+    }, {
+      "menuName": "Untitled Macro2",
+      "functionName": "UntitledMacro2"
+    }, {
+      "menuName": "Untitled Macro3",
+      "functionName": "UntitledMacro3"
+    }]
+  }
+}
