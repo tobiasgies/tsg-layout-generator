@@ -1,11 +1,19 @@
 // Replace "presentationId" with the actual ID of the Google Slides presentation
+import Slide = GoogleAppsScript.Slides.Slide;
+
 var presentationId = "CHANGEME";
 
 // Replace "tabName" with the name of the tab that contains the cell
 var tabName = "Layout";
 
 class Player {
-  constructor(name, twitch, rank, country, racetimeId, pronouns = null) {
+  readonly name: string;
+  readonly twitch: string;
+  readonly rank: number;
+  readonly country: string;
+  readonly racetimeId: string;
+  readonly pronouns: string;
+  constructor(name: string, twitch: string, rank: number, country: string, racetimeId: string, pronouns = null) {
     this.name = name;
     this.twitch = twitch;
     this.rank = rank;
@@ -16,7 +24,14 @@ class Player {
 }
 
 class FaceOffStats {
-  constructor(encounters, player1Wins, player1WinPercentage, player2Wins, player2WinPercentage, draws, drawPercentage) {
+  readonly encounters: number;
+  readonly player1Wins: number;
+  readonly player1WinPercentage: number;
+  readonly player2Wins: number;
+  readonly player2WinPercentage: number;
+  readonly draws: number;
+  readonly drawPercentage: number;
+  constructor(encounters: number, player1Wins: number, player1WinPercentage: number, player2Wins: number, player2WinPercentage: number, draws: number, drawPercentage: number) {
     this.encounters = encounters;
     this.player1Wins = player1Wins;
     this.player1WinPercentage = player1WinPercentage;
@@ -28,7 +43,16 @@ class FaceOffStats {
 }
 
 class PlayerStats {
-  constructor(player, numberOfRaces, bestTime, bestTimeDate, numberOfWins, numberOfSeconds, numberOfThirds, numberOfForfeits) {
+  readonly player: Player;
+  readonly numberOfRaces: number;
+  readonly bestTime: string; // TODO convert to duration type
+  readonly bestTimeDate: Date;
+  readonly numberOfWins: number;
+  readonly numberOfSeconds: number;
+  readonly numberOfThirds: number;
+  readonly numberOfForfeits: number;
+
+  constructor(player: Player, numberOfRaces: number, bestTime: string, bestTimeDate: Date, numberOfWins: number, numberOfSeconds: number, numberOfThirds: number, numberOfForfeits: number) {
     this.player = player;
     this.numberOfRaces = numberOfRaces;
     this.bestTime = bestTime;
@@ -40,76 +64,76 @@ class PlayerStats {
   }
 }
 
-function ReplaceElementText(slide, elementId, newText) {
-  var pageElement = slide.getPageElementById(elementId);
-  var elementShape = pageElement.asShape();
-  var elementText = elementShape.getText();
+function replaceElementText(slide: Slide, elementId: string, newText: string) {
+  const pageElement = slide.getPageElementById(elementId);
+  const elementShape = pageElement.asShape();
+  const elementText = elementShape.getText();
   elementText.setText(newText);
 }
 
-function LayoutTitleSlide(slide, player1, player2) {
-  ReplaceElementText(slide, "g207c0db1c30_0_0", player1.name);
-  ReplaceElementText(slide, "g207c0db1c30_0_1", player2.name);
+function layoutTitleSlide(slide: Slide, player1: Player, player2: Player) {
+  replaceElementText(slide, "g207c0db1c30_0_0", player1.name);
+  replaceElementText(slide, "g207c0db1c30_0_1", player2.name);
 }
 
-function LayoutRaceSlide(slide, player1, player2, group) {
-  ReplaceElementText(slide, "g20587f4170f_0_24", player1.name);
-  ReplaceElementText(slide, "g20587f4170f_0_25", player1.twitch);
-  ReplaceElementText(slide, "g20587f4170f_0_31", player1.rank);
-  ReplaceElementText(slide, "g20587f4170f_0_26", player1.country);
-  ReplaceElementText(slide, "g20f29317d6f_0_0", player1.pronouns);
+function layoutRaceSlide(slide: Slide, player1: Player, player2: Player, group: string) {
+  replaceElementText(slide, "g20587f4170f_0_24", player1.name);
+  replaceElementText(slide, "g20587f4170f_0_25", player1.twitch);
+  replaceElementText(slide, "g20587f4170f_0_31", player1.rank.toString());
+  replaceElementText(slide, "g20587f4170f_0_26", player1.country);
+  replaceElementText(slide, "g20f29317d6f_0_0", player1.pronouns);
   
-  ReplaceElementText(slide, "g20587f4170f_0_27", player2.name);
-  ReplaceElementText(slide, "g20587f4170f_0_28", player2.twitch);
-  ReplaceElementText(slide, "g20587f4170f_0_30", player2.rank);
-  ReplaceElementText(slide, "g20587f4170f_0_29", player2.country);
-  ReplaceElementText(slide, "g20f29317d6f_0_1", player2.pronouns);
+  replaceElementText(slide, "g20587f4170f_0_27", player2.name);
+  replaceElementText(slide, "g20587f4170f_0_28", player2.twitch);
+  replaceElementText(slide, "g20587f4170f_0_30", player2.rank.toString());
+  replaceElementText(slide, "g20587f4170f_0_29", player2.country);
+  replaceElementText(slide, "g20f29317d6f_0_1", player2.pronouns);
   
-  ReplaceElementText(slide, "g20587f4170f_0_23", group);
+  replaceElementText(slide, "g20587f4170f_0_23", group);
 }
 
-function LayoutStatsSlide(slide, player1Stats, player2Stats, faceOffStats) {
-  ReplaceElementText(slide, "g20587f4170f_0_38", player1Stats.player.name);
-  ReplaceElementText(slide, "g20587f4170f_0_40", player1Stats.player.twitch);
-  ReplaceElementText(slide, "g20587f4170f_0_57", player1Stats.player.rank);
-  ReplaceElementText(slide, "g20f29317d6f_0_2", player1Stats.player.pronouns);
-  ReplaceElementText(slide, "g20587f4170f_0_41", player2Stats.player.name);
-  ReplaceElementText(slide, "g20587f4170f_0_43", player2Stats.player.twitch);
-  ReplaceElementText(slide, "g20587f4170f_0_56", player2Stats.player.rank);
-  ReplaceElementText(slide, "g20f29317d6f_0_3", player2Stats.player.pronouns);
+function LayoutStatsSlide(slide: Slide, player1Stats: PlayerStats, player2Stats: PlayerStats, faceOffStats: FaceOffStats) {
+  replaceElementText(slide, "g20587f4170f_0_38", player1Stats.player.name);
+  replaceElementText(slide, "g20587f4170f_0_40", player1Stats.player.twitch);
+  replaceElementText(slide, "g20587f4170f_0_57", player1Stats.player.rank.toString());
+  replaceElementText(slide, "g20f29317d6f_0_2", player1Stats.player.pronouns);
+  replaceElementText(slide, "g20587f4170f_0_41", player2Stats.player.name);
+  replaceElementText(slide, "g20587f4170f_0_43", player2Stats.player.twitch);
+  replaceElementText(slide, "g20587f4170f_0_56", player2Stats.player.rank.toString());
+  replaceElementText(slide, "g20f29317d6f_0_3", player2Stats.player.pronouns);
 
-  ReplaceElementText(slide, "g20587f4170f_0_72", player1Stats.numberOfRaces);
-  ReplaceElementText(slide, "g20587f4170f_0_70", player2Stats.numberOfRaces);
+  replaceElementText(slide, "g20587f4170f_0_72", player1Stats.numberOfRaces.toString());
+  replaceElementText(slide, "g20587f4170f_0_70", player2Stats.numberOfRaces.toString());
 
-  ReplaceElementText(slide, "g20587f4170f_0_64", faceOffStats.player1Wins);
-  ReplaceElementText(slide, "g20587f4170f_0_67", faceOffStats.player1WinPercentage);
-  ReplaceElementText(slide, "g20587f4170f_0_65", faceOffStats.player2Wins);
-  ReplaceElementText(slide, "g20587f4170f_0_68", faceOffStats.player2WinPercentage);
-  ReplaceElementText(slide, "g20587f4170f_0_66", faceOffStats.draws);
-  ReplaceElementText(slide, "g20587f4170f_0_69", faceOffStats.drawPercentage);
-  ReplaceElementText(slide, "g20587f4170f_0_59", faceOffStats.encounters);
+  replaceElementText(slide, "g20587f4170f_0_64", faceOffStats.player1Wins.toString());
+  replaceElementText(slide, "g20587f4170f_0_67", faceOffStats.player1WinPercentage.toString());
+  replaceElementText(slide, "g20587f4170f_0_65", faceOffStats.player2Wins.toString());
+  replaceElementText(slide, "g20587f4170f_0_68", faceOffStats.player2WinPercentage.toString());
+  replaceElementText(slide, "g20587f4170f_0_66", faceOffStats.draws.toString());
+  replaceElementText(slide, "g20587f4170f_0_69", faceOffStats.drawPercentage.toString());
+  replaceElementText(slide, "g20587f4170f_0_59", faceOffStats.encounters.toString());
 
-  ReplaceElementText(slide, "g20587f4170f_0_44", player1Stats.numberOfWins);
-  ReplaceElementText(slide, "g20587f4170f_0_45", player1Stats.numberOfSeconds);
-  ReplaceElementText(slide, "g20587f4170f_0_46", player1Stats.numberOfThirds);
-  ReplaceElementText(slide, "g20587f4170f_0_47", player1Stats.numberOfForfeits);
+  replaceElementText(slide, "g20587f4170f_0_44", player1Stats.numberOfWins.toString());
+  replaceElementText(slide, "g20587f4170f_0_45", player1Stats.numberOfSeconds.toString());
+  replaceElementText(slide, "g20587f4170f_0_46", player1Stats.numberOfThirds.toString());
+  replaceElementText(slide, "g20587f4170f_0_47", player1Stats.numberOfForfeits.toString());
 
-  ReplaceElementText(slide, "g20587f4170f_0_48", player2Stats.numberOfWins);
-  ReplaceElementText(slide, "g20587f4170f_0_49", player2Stats.numberOfSeconds);
-  ReplaceElementText(slide, "g20587f4170f_0_50", player2Stats.numberOfThirds);
-  ReplaceElementText(slide, "g20587f4170f_0_51", player2Stats.numberOfForfeits);
+  replaceElementText(slide, "g20587f4170f_0_48", player2Stats.numberOfWins.toString());
+  replaceElementText(slide, "g20587f4170f_0_49", player2Stats.numberOfSeconds.toString());
+  replaceElementText(slide, "g20587f4170f_0_50", player2Stats.numberOfThirds.toString());
+  replaceElementText(slide, "g20587f4170f_0_51", player2Stats.numberOfForfeits.toString());
 
-  ReplaceElementText(slide, "g20587f4170f_0_52", player1Stats.bestTime);
-  ReplaceElementText(slide, "g20587f4170f_0_54", player1Stats.bestTimeDate);
+  replaceElementText(slide, "g20587f4170f_0_52", player1Stats.bestTime);
+  replaceElementText(slide, "g20587f4170f_0_54", player1Stats.bestTimeDate.toString());
 
-  ReplaceElementText(slide, "g20587f4170f_0_53", player2Stats.bestTime);
-  ReplaceElementText(slide, "g20587f4170f_0_55", player2Stats.bestTimeDate);
+  replaceElementText(slide, "g20587f4170f_0_53", player2Stats.bestTime);
+  replaceElementText(slide, "g20587f4170f_0_55", player2Stats.bestTimeDate.toString());
 }
 
-function AutoLayout() {
+function autoLayout(): void {
   var ui = SpreadsheetApp.getUi();
   var number = ui.prompt("Enter the row number of the match").getResponseText();
-  if(isNaN(number)) {
+  if(isNaN(parseInt(number))) {
     ui.alert("Invalid input, please enter a number");
     return;
   }
@@ -136,7 +160,7 @@ function AutoLayout() {
   var idcc = sheet.getRange("A"+number).getValue();
   sheet.getRange("BD"+number).setValue(idcc);
 
-  var stat = GetRacetimeData(player1.racetimeId, player2.racetimeId);
+  var stat = getRacetimeData(player1.racetimeId, player2.racetimeId);
   
   // We use the Spreadsheet to format the data as we need it.
   // So take the stats data from racetime and put it into the spreadsheet so it can do its formatting magic.
@@ -203,13 +227,13 @@ function AutoLayout() {
   var all_slide = SlidesApp.openById(presentationId);
 
   var start = all_slide.getSlides()[1];
-  LayoutTitleSlide(start, player1, player2);
+  layoutTitleSlide(start, player1, player2);
 
   var stats = all_slide.getSlides()[2];
   LayoutStatsSlide(stats, player1Stats, player2Stats, faceOffStats);
 
   var match = all_slide.getSlides()[3];
-  LayoutRaceSlide(match, player1, player2, group);
+  layoutRaceSlide(match, player1, player2, group);
 
   var link = "https://docs.google.com/presentation/d/" + presentationId + "/edit#slide=id.g10aa2c5d08b_0_13";
   SpreadsheetApp.getUi().showModelessDialog(HtmlService.createHtmlOutput('<script>window.open("'+link+'");google.script.host.close();</script>'), 'Opening...');
