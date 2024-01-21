@@ -3,6 +3,7 @@ import Slide = GoogleAppsScript.Slides.Slide;
 import {Player} from "./data/player";
 import {FaceOffStats} from "./data/face_off_stats";
 import {PlayerStats} from "./data/player_stats";
+import {getRacetimeData} from "./clients/racetime";
 
 var presentationId = "CHANGEME";
 

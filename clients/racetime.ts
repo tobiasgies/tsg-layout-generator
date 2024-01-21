@@ -2,7 +2,7 @@ export class RacetimeUser {
 
 }
 
-function getRacetimeData(p1_rid: string, p2_rid: string) {
+export function getRacetimeData(p1_rid: string, p2_rid: string) {
     let p1Req = UrlFetchApp.fetch("https://racetime.gg/user/" + p1_rid + "/data");
     let p2Req = UrlFetchApp.fetch("https://racetime.gg/user/" + p2_rid + "/data");
 
