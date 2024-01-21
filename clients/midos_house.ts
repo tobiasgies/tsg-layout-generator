@@ -64,7 +64,7 @@ export class MidosHouse {
      * @param goalName The goal name to check
      * @private
      */
-    private isStandardGoalName(goalName: string):boolean {
+    private isStandardGoalName(goalName: string): boolean {
         return !goalName.toLowerCase().includes("multiworld");
     }
 }
