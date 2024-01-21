@@ -1,15 +1,8 @@
-function getRacetimeData(p1_rid, p2_rid) {
+function getRacetimeData(p1_rid: string, p2_rid: string) {
   let p1Req = UrlFetchApp.fetch("https://racetime.gg/user/" + p1_rid + "/data");
   let p2Req = UrlFetchApp.fetch("https://racetime.gg/user/" + p2_rid + "/data");
 
   if (p1Req.getResponseCode() != 200 || p2Req.getResponseCode() != 200) {
-    return null;
-  }
-
-  let req = UrlFetchApp.fetch("https://racetime.gg/ootr/leaderboards/data");
-  const stdLeaderboard = JSON.parse(req.getContentText())?.leaderboards?.filter(l => l.goal === "Standard Ruleset")[0] || null;
-
-  if (stdLeaderboard == null) {
     return null;
   }
 
@@ -44,7 +37,7 @@ function getRacetimeData(p1_rid, p2_rid) {
       pStats.pronouns = players[p].pronouns;
       // Fetch player races
       do {
-        req = UrlFetchApp.fetch("https://racetime.gg" + players[p].url + "/races/data?show_entrants=1&page=" + numPage);
+        let req = UrlFetchApp.fetch("https://racetime.gg" + players[p].url + "/races/data?show_entrants=1&page=" + numPage);
         const tmpResp = JSON.parse(req.getContentText());
         maxPage = tmpResp.num_pages;
 
