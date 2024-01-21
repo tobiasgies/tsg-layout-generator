@@ -1,68 +1,13 @@
 // Replace "presentationId" with the actual ID of the Google Slides presentation
 import Slide = GoogleAppsScript.Slides.Slide;
+import {Player} from "./data/player";
+import {FaceOffStats} from "./data/face_off_stats";
+import {PlayerStats} from "./data/player_stats";
 
 var presentationId = "CHANGEME";
 
 // Replace "tabName" with the name of the tab that contains the cell
 var tabName = "Layout";
-
-class Player {
-  readonly name: string;
-  readonly twitch: string;
-  readonly rank: number;
-  readonly country: string;
-  readonly racetimeId: string;
-  readonly pronouns: string;
-  constructor(name: string, twitch: string, rank: number, country: string, racetimeId: string, pronouns = null) {
-    this.name = name;
-    this.twitch = twitch;
-    this.rank = rank;
-    this.country = country;
-    this.racetimeId = racetimeId;
-    this.pronouns = pronouns;
-  }
-}
-
-class FaceOffStats {
-  readonly encounters: number;
-  readonly player1Wins: number;
-  readonly player1WinPercentage: number;
-  readonly player2Wins: number;
-  readonly player2WinPercentage: number;
-  readonly draws: number;
-  readonly drawPercentage: number;
-  constructor(encounters: number, player1Wins: number, player1WinPercentage: number, player2Wins: number, player2WinPercentage: number, draws: number, drawPercentage: number) {
-    this.encounters = encounters;
-    this.player1Wins = player1Wins;
-    this.player1WinPercentage = player1WinPercentage;
-    this.player2Wins = player2Wins;
-    this.player2WinPercentage = player2WinPercentage;
-    this.draws = draws;
-    this.drawPercentage = drawPercentage;
-  }
-}
-
-class PlayerStats {
-  readonly player: Player;
-  readonly numberOfRaces: number;
-  readonly bestTime: string; // TODO convert to duration type
-  readonly bestTimeDate: Date;
-  readonly numberOfWins: number;
-  readonly numberOfSeconds: number;
-  readonly numberOfThirds: number;
-  readonly numberOfForfeits: number;
-
-  constructor(player: Player, numberOfRaces: number, bestTime: string, bestTimeDate: Date, numberOfWins: number, numberOfSeconds: number, numberOfThirds: number, numberOfForfeits: number) {
-    this.player = player;
-    this.numberOfRaces = numberOfRaces;
-    this.bestTime = bestTime;
-    this.bestTimeDate = bestTimeDate;
-    this.numberOfWins = numberOfWins;
-    this.numberOfSeconds = numberOfSeconds;
-    this.numberOfThirds = numberOfThirds;
-    this.numberOfForfeits = numberOfForfeits;
-  }
-}
 
 function replaceElementText(slide: Slide, elementId: string, newText: string) {
   const pageElement = slide.getPageElementById(elementId);
