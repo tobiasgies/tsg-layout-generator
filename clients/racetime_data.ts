@@ -15,7 +15,6 @@ export class RacetimeUser {
     readonly teams: RacetimeTeam[] | null;
     readonly races: RacetimeRace[] | null;
 
-
     constructor(id: string,
                 full_name: string,
                 name: string,
@@ -28,9 +27,9 @@ export class RacetimeUser {
                 twitch_display_name: string,
                 twitch_channel: string,
                 can_moderate: boolean,
-                stats: RacetimeUserStats | null,
-                teams: RacetimeTeam[] | null,
-                races: RacetimeRace[] | null) {
+                stats: RacetimeUserStats | null = null,
+                teams: RacetimeTeam[] | null = null,
+                races: RacetimeRace[] | null = null) {
         this.id = id;
         this.full_name = full_name;
         this.name = name;
@@ -83,8 +82,8 @@ export class RacetimeTeam {
                 data_url: string,
                 avatar: string,
                 profile: string,
-                categories: RacetimeCategory[] | null,
-                members: RacetimeUser[] | null) {
+                categories: RacetimeCategory[] | null = null,
+                members: RacetimeUser[] | null = null) {
         this.name = name;
         this.slug = slug;
         this.formal = formal;
@@ -133,6 +132,7 @@ class RacetimeEntrantStatus {
 
 class RacetimeEntrant {
     readonly user: RacetimeUser;
+    readonly team: RacetimeTeam | null;
     readonly status: RacetimeEntrantStatus;
     readonly finish_time: string | null;
     readonly finished_at: Date | null;
@@ -147,17 +147,19 @@ class RacetimeEntrant {
 
     constructor(user: RacetimeUser,
                 status: RacetimeEntrantStatus,
-                finish_time: string | null,
-                finished_at: Date | null,
-                place: number | null,
-                place_ordinal: string | null,
-                score: number | null,
-                score_change: number | null,
-                comment: string | null,
-                has_comment: boolean,
                 stream_live: boolean,
-                stream_override: boolean) {
+                stream_override: boolean,
+                has_comment: boolean,
+                comment: string | null = null,
+                team: RacetimeTeam | null = null,
+                score: number | null = null,
+                score_change: number | null = null,
+                finish_time: string | null = null,
+                finished_at: Date | null = null,
+                place: number | null = null,
+                place_ordinal: string | null = null) {
         this.user = user;
+        this.team = team;
         this.status = status;
         this.finish_time = finish_time;
         this.finished_at = finished_at;
@@ -187,35 +189,19 @@ class RacetimeCategory {
     readonly current_races: RacetimeRace[] | null;
     readonly emotes: {[name: string]: string} | null;
 
-    constructor({
-                    name,
-                    short_name,
-                    slug,
-                    url,
-                    data_url,
-                    image,
-                    info,
-                    streaming_required,
-                    owners,
-                    moderators,
-                    goals,
-                    current_races,
-                    emotes
-                }: {
-        name: string,
-        short_name: string,
-        slug: string,
-        url: string,
-        data_url: string,
-        image: string,
-        info: string | null,
-        streaming_required: boolean | null,
-        owners: RacetimeUser[] | null,
-        moderators: RacetimeUser[] | null,
-        goals: string[] | null,
-        current_races: RacetimeRace[] | null,
-        emotes: { [name: string]: string } | null
-    }) {
+    constructor(name: string,
+                short_name: string,
+                slug: string,
+                url: string,
+                data_url: string,
+                image: string,
+                info: string | null = null,
+                streaming_required: boolean | null = null,
+                owners: RacetimeUser[] | null = null,
+                moderators: RacetimeUser[] | null = null,
+                goals: string[] | null = null,
+                current_races: RacetimeRace[] | null = null,
+                emotes: { [name: string]: string } | null = null) {
         this.name = name;
         this.short_name = short_name;
         this.slug = slug;
@@ -275,47 +261,47 @@ export class RacetimeRace {
     readonly allow_non_entrant_chat: boolean | null;
     readonly chat_message_delay: string | null; // TODO convert to duration
 
-    constructor(version: number | null,
-                name: string,
-                slug: string | null,
+    constructor(name: string,
                 status: RacetimeRaceStatus,
                 url: string,
                 data_url: string,
-                websocket_url: string | null,
-                websocket_bot_url: string | null,
-                websocket_oauth_url: string | null,
-                category: RacetimeCategory | null,
                 goal: RacetimeRaceGoal,
                 info: string,
-                info_bot: string | null,
-                info_user: string | null,
-                team_race: boolean | null,
                 entrants_count: number,
                 entrants_count_finished: number,
                 entrants_count_inactive: number,
-                entrants: RacetimeEntrant[] | null,
                 opened_at: Date,
-                start_delay: string | null,
-                started_at: Date | null,
-                ended_at: Date | null,
-                cancelled_at: Date | null,
-                unlisted: boolean | null,
                 time_limit: string,
-                time_limit_auto_complete: boolean | null,
-                require_even_teams: boolean | null,
-                streaming_required: boolean | null,
-                auto_start: boolean | null,
-                opened_by: RacetimeUser | null,
-                monitors: RacetimeUser[] | null,
-                recordable: boolean | null,
-                recorded: boolean | null,
-                recorded_by: RacetimeUser | null,
-                allow_comments: boolean | null,
-                hide_comments: boolean | null,
-                allow_prerace_chat: boolean | null,
-                allow_midrace_chat: boolean | null,
-                allow_non_entrant_chat: boolean | null,
-                chat_message_delay: string | null) {
+                version: number | null = null,
+                slug: string | null = null,
+                websocket_url: string | null = null,
+                websocket_bot_url: string | null = null,
+                websocket_oauth_url: string | null = null,
+                category: RacetimeCategory | null = null,
+                info_bot: string | null = null,
+                info_user: string | null = null,
+                team_race: boolean | null = null,
+                entrants: RacetimeEntrant[] | null = null,
+                start_delay: string | null = null,
+                started_at: Date | null = null,
+                ended_at: Date | null = null,
+                cancelled_at: Date | null = null,
+                unlisted: boolean | null = null,
+                time_limit_auto_complete: boolean | null = null,
+                require_even_teams: boolean | null = null,
+                streaming_required: boolean | null = null,
+                auto_start: boolean | null = null,
+                opened_by: RacetimeUser | null = null,
+                monitors: RacetimeUser[] | null = null,
+                recordable: boolean | null = null,
+                recorded: boolean | null = null,
+                recorded_by: RacetimeUser | null = null,
+                allow_comments: boolean | null = null,
+                hide_comments: boolean | null = null,
+                allow_prerace_chat: boolean | null = null,
+                allow_midrace_chat: boolean | null = null,
+                allow_non_entrant_chat: boolean | null = null,
+                chat_message_delay: string | null = null) {
         this.version = version;
         this.name = name;
         this.slug = slug;
