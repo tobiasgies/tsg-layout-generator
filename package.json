@@ -1,6 +1,7 @@
 {
   "dependencies": {
-    "@types/google-apps-script": "^1.0.59"
+    "@types/google-apps-script": "^1.0.59",
+    "tinyduration": "^3.3.0"
   },
   "devDependencies": {
     "typescript": "^4.9.5"
