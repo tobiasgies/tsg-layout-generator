@@ -1,5 +1,5 @@
 export class MidosHouse {
-    private standardGoals: string[]
+    private standardGoals: string[] = []
     private lastFetch: Date
 
     private readonly MH_URL = "https://midos.house/api/v1/graphql";
