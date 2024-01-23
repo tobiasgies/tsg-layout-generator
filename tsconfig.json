@@ -3,6 +3,7 @@
     "target": "ES2015",
     "types": ["google-apps-script"],
     "lib": ["esnext"],
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "moduleResolution": "Node"
   }
 }
