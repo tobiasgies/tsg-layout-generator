@@ -313,7 +313,7 @@ class RacetimeCategory {
             moderators?: RacetimeUser[] | null,
             goals?: string[] | null,
             current_races?: RacetimeRace[] | null,
-            emotes?: { [p: string]: string } | null
+            emotes?: { [name: string]: string } | null
         }
     ) {
         this.name = name;
