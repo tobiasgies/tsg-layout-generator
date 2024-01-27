@@ -1,3 +1,51 @@
+import {RacetimeRace, RacetimeRaceStatus, RacetimeUser} from "./racetime_data";
+
+export class Racetime {
+    private readonly baseUrl: string;
+    private static readonly RACES_PER_PAGE = 10;
+
+    public constructor(baseUrl: string = "https://racetime.gg") {
+        this.baseUrl = baseUrl;
+    }
+
+    public fetchUser(identifier: string): RacetimeUser {
+        let response = UrlFetchApp.fetch(`${this.baseUrl}/user/${identifier}/data`);
+
+        if (response.getResponseCode() != 200) {
+            throw new Error(`Could not fetch data for user '${identifier}', status ${response.getResponseCode()}.`);
+        }
+
+        return new RacetimeUser(JSON.parse(response.getContentText()));
+    }
+
+    public fetchUserRaces(user: RacetimeUser): RacetimeRace[] {
+        if (!!user.stats && user.stats.joined == 0) {
+            return [];
+        }
+        else if (!!user.stats) {
+            const numberOfPages = Math.ceil(user.stats.joined / Racetime.RACES_PER_PAGE)
+            const pageUrls = this.generateUserRacesPageUrls(user, 1, numberOfPages);
+            const responses = UrlFetchApp.fetchAll(pageUrls);
+            return responses.flatMap(response => {
+                if (response.getResponseCode() != 200) {
+                    throw new Error(`Could not fetch races for user '${user.full_name}'. Failed to read at least one page.`);
+                }
+                const json = JSON.parse(response.getContentText())
+                // TODO this is incomplete and does not account for sub-entities
+                return json.races.map(it => new RacetimeRace(it))
+            })
+        } else {
+            // TODO implement: We don't have user stats - read the first page of the user's race list to get that data
+        }
+    }
+
+    private generateUserRacesPageUrls(user: RacetimeUser, fromPage: number, toPage: number): string[] {
+        return Array(toPage - fromPage).fill(0)
+            .map((_, idx) => fromPage + idx)
+            .map((page) => `${this.baseUrl}${user.url}/races/data?show_entrants=true&page=${page}`)
+    }
+}
+
 export function getRacetimeData(p1_rid: string, p2_rid: string) {
     let p1Req = UrlFetchApp.fetch("https://racetime.gg/user/" + p1_rid + "/data");
     let p2Req = UrlFetchApp.fetch("https://racetime.gg/user/" + p2_rid + "/data");
