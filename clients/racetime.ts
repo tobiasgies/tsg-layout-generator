@@ -1,5 +1,8 @@
 import {Race, User, UserRacesResponse} from "./racetime_data";
 
+/**
+ * Racetime API client
+ */
 export class Racetime {
     private readonly baseUrl: string;
     private static readonly RACES_PER_PAGE = 10;
@@ -8,6 +11,10 @@ export class Racetime {
         this.baseUrl = baseUrl;
     }
 
+    /**
+     * Fetch Racetime user data for a given identifier.
+     * @param identifier Can be either the user's ID or (for people who support racetime.gg financially) their username
+     */
     public fetchUser(identifier: string): User {
         let response = UrlFetchApp.fetch(`${this.baseUrl}/user/${identifier}/data`);
 
@@ -18,6 +25,12 @@ export class Racetime {
         return JSON.parse(response.getContentText());
     }
 
+    /**
+     * Fetch all races for a given racetime user.
+     *
+     * In the background, this makes multiple API calls because user race data is paginated.
+     * @param user The user to fetch all races for.
+     */
     public fetchUserRaces(user: User): Race[] {
         if (!!user.stats && user.stats.joined == 0) {
             return [];
@@ -44,6 +57,11 @@ export class Racetime {
         }
     }
 
+    /**
+     * Fetches all races from the given paginated URLs and concatenates them into a single array.
+     * @param pageUrls List of paginated URLs that contain a user's races.
+     * @private
+     */
     private fetchAndConcatRacePages(pageUrls: string[]): Race[] {
         const responses = UrlFetchApp.fetchAll(pageUrls);
         return responses.flatMap(response => {
@@ -55,10 +73,23 @@ export class Racetime {
         })
     }
 
+    /**
+     * Generates a single URL for a page from the user's races list.
+     * @param user The user whose races we're looking for
+     * @param page Page number of the page we want to load
+     * @private
+     */
     private racePageUrl(user: User, page: number): string {
         return `${this.baseUrl}${user.url}/races/data?show_entrants=true&page=${page}`;
     }
 
+    /**
+     * Generates URLs for all pages between fromPage and toPage (inclusive) from the user's races list.
+     * @param user The user whose races we're looking for
+     * @param fromPage First page to generate a URL for
+     * @param toPage Last page to generate a URL for
+     * @private
+     */
     private racePageUrls(user: User, fromPage: number, toPage: number): string[] {
         return Array(toPage - fromPage + 1).fill(null)
             .map((_, idx) => fromPage + idx)
