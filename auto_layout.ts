@@ -3,7 +3,6 @@ import Slide = GoogleAppsScript.Slides.Slide;
 import {Player} from "./data/player";
 import {FaceOffStats} from "./data/face_off_stats";
 import {PlayerStats} from "./data/player_stats";
-import {getRacetimeData} from "./clients/racetime";
 
 var presentationId = "CHANGEME";
 
@@ -166,7 +165,12 @@ function autoLayout(): void {
     var draw = sheet.getRange("AJ" + number).getValue();
     var drawpct = sheet.getRange("AS" + number).getValue();
 
-    var faceOffStats = new FaceOffStats(encounters, p1win, p1winpct, p2win, p2winpct, draw, drawpct);
+    var faceOffStats = new FaceOffStats({
+        encounters: encounters,
+        player1Wins: p1win,
+        player2Wins: p1winpct,
+        draws: p2win
+    }, p2winpct, draw, drawpct);
 
     ui.alert("Stats are now generated, updating slides!");
 
