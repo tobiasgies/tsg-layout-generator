@@ -24,10 +24,10 @@ export class Racetime {
         }
         else if (!!user.stats) {
             const numberOfPages = Math.ceil(user.stats.joined / Racetime.RACES_PER_PAGE)
-            const pageUrls = this.racesPageUrls(user, 1, numberOfPages);
-            return this.fetchAndConcatUserRaces(pageUrls);
+            const pageUrls = this.racePageUrls(user, 1, numberOfPages);
+            return this.fetchAndConcatRacePages(pageUrls);
         } else {
-            const firstPageUrl = this.racesPageUrl(user, 1)
+            const firstPageUrl = this.racePageUrl(user, 1)
             const firstPageResponse = UrlFetchApp.fetch(firstPageUrl);
             if (firstPageResponse.getResponseCode() != 200) {
                 throw new Error(`Could not fetch races for user '${user.full_name}'. Failed to read first page.`);
@@ -38,13 +38,13 @@ export class Racetime {
             } else if (firstPageJson.num_pages == 1) {
                 return firstPageJson.races;
             } else {
-                const pageUrls = this.racesPageUrls(user, 2, firstPageJson.num_pages);
-                return firstPageJson.races.concat(this.fetchAndConcatUserRaces(pageUrls))
+                const pageUrls = this.racePageUrls(user, 2, firstPageJson.num_pages);
+                return firstPageJson.races.concat(this.fetchAndConcatRacePages(pageUrls))
             }
         }
     }
 
-    private fetchAndConcatUserRaces(pageUrls: string[]): Race[] {
+    private fetchAndConcatRacePages(pageUrls: string[]): Race[] {
         const responses = UrlFetchApp.fetchAll(pageUrls);
         return responses.flatMap(response => {
             if (response.getResponseCode() != 200) {
@@ -55,14 +55,14 @@ export class Racetime {
         })
     }
 
-    private racesPageUrl(user: User, page: number): string {
+    private racePageUrl(user: User, page: number): string {
         return `${this.baseUrl}${user.url}/races/data?show_entrants=true&page=${page}`;
     }
 
-    private racesPageUrls(user: User, fromPage: number, toPage: number): string[] {
+    private racePageUrls(user: User, fromPage: number, toPage: number): string[] {
         return Array(toPage - fromPage + 1).fill(null)
             .map((_, idx) => fromPage + idx)
-            .map((page) => this.racesPageUrl(user, page))
+            .map((page) => this.racePageUrl(user, page))
     }
 }
 
