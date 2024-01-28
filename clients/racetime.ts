@@ -1,4 +1,4 @@
-import {RacetimeRace, RacetimeRaceStatus, RacetimeUser} from "./racetime_data";
+import {Race, User, UserRacesResponse} from "./racetime_data";
 
 export class Racetime {
     private readonly baseUrl: string;
@@ -8,41 +8,61 @@ export class Racetime {
         this.baseUrl = baseUrl;
     }
 
-    public fetchUser(identifier: string): RacetimeUser {
+    public fetchUser(identifier: string): User {
         let response = UrlFetchApp.fetch(`${this.baseUrl}/user/${identifier}/data`);
 
         if (response.getResponseCode() != 200) {
             throw new Error(`Could not fetch data for user '${identifier}', status ${response.getResponseCode()}.`);
         }
 
-        return new RacetimeUser(JSON.parse(response.getContentText()));
+        return JSON.parse(response.getContentText());
     }
 
-    public fetchUserRaces(user: RacetimeUser): RacetimeRace[] {
+    public fetchUserRaces(user: User): Race[] {
         if (!!user.stats && user.stats.joined == 0) {
             return [];
         }
         else if (!!user.stats) {
             const numberOfPages = Math.ceil(user.stats.joined / Racetime.RACES_PER_PAGE)
-            const pageUrls = this.generateUserRacesPageUrls(user, 1, numberOfPages);
-            const responses = UrlFetchApp.fetchAll(pageUrls);
-            return responses.flatMap(response => {
-                if (response.getResponseCode() != 200) {
-                    throw new Error(`Could not fetch races for user '${user.full_name}'. Failed to read at least one page.`);
-                }
-                const json = JSON.parse(response.getContentText())
-                // TODO this is incomplete and does not account for sub-entities
-                return json.races.map(it => new RacetimeRace(it))
-            })
+            const pageUrls = this.racesPageUrls(user, 1, numberOfPages);
+            return this.fetchAndConcatUserRaces(pageUrls);
         } else {
-            // TODO implement: We don't have user stats - read the first page of the user's race list to get that data
+            const firstPageUrl = this.racesPageUrl(user, 1)
+            const firstPageResponse = UrlFetchApp.fetch(firstPageUrl);
+            if (firstPageResponse.getResponseCode() != 200) {
+                throw new Error(`Could not fetch races for user '${user.full_name}'. Failed to read first page.`);
+            }
+            const firstPageJson: UserRacesResponse = JSON.parse(firstPageResponse.getContentText())
+            if (firstPageJson.count == 0) {
+                return [];
+            } else if (firstPageJson.num_pages == 1) {
+                return firstPageJson.races;
+            } else {
+                const pageUrls = this.racesPageUrls(user, 2, firstPageJson.num_pages);
+                return firstPageJson.races.concat(this.fetchAndConcatUserRaces(pageUrls))
+            }
         }
     }
 
-    private generateUserRacesPageUrls(user: RacetimeUser, fromPage: number, toPage: number): string[] {
-        return Array(toPage - fromPage).fill(0)
+    private fetchAndConcatUserRaces(pageUrls: string[]): Race[] {
+        const responses = UrlFetchApp.fetchAll(pageUrls);
+        return responses.flatMap(response => {
+            if (response.getResponseCode() != 200) {
+                throw new Error(`Could not fetch user races. Failed to read at least one page.`);
+            }
+            const json: UserRacesResponse = JSON.parse(response.getContentText());
+            return json.races;
+        })
+    }
+
+    private racesPageUrl(user: User, page: number): string {
+        return `${this.baseUrl}${user.url}/races/data?show_entrants=true&page=${page}`;
+    }
+
+    private racesPageUrls(user: User, fromPage: number, toPage: number): string[] {
+        return Array(toPage - fromPage + 1).fill(null)
             .map((_, idx) => fromPage + idx)
-            .map((page) => `${this.baseUrl}${user.url}/races/data?show_entrants=true&page=${page}`)
+            .map((page) => this.racesPageUrl(user, page))
     }
 }
 
