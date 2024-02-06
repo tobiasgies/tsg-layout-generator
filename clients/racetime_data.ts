@@ -5,14 +5,14 @@ export type User = {
     readonly id: string;
     readonly full_name: string;
     readonly name: string;
-    readonly discriminator?: string;
+    readonly discriminator: string | null;
     readonly url: string;
-    readonly avatar: string;
-    readonly pronouns: string;
+    readonly avatar: string | null;
+    readonly pronouns: string | null;
     readonly flair: string;
-    readonly twitch_name: string;
+    readonly twitch_name: string | null;
     readonly twitch_display_name: string;
-    readonly twitch_channel: string;
+    readonly twitch_channel: string | null;
     readonly can_moderate: boolean;
     readonly stats?: UserStats;
     readonly teams?: Team[];
@@ -69,21 +69,21 @@ type BaseEntrant = {
     readonly place?: number;
     readonly place_ordinal?: string;
     readonly score?: number;
-    readonly score_change?: number;
-    readonly comment?: string;
+    readonly score_change: number | null;
+    readonly comment: string | null;
     readonly has_comment: boolean;
     readonly stream_live: boolean;
     readonly stream_override: boolean;
 }
 
 export type Entrant = {
-    readonly finish_time?: string;
-    readonly finished_at?: string;
+    readonly finish_time: string | null;
+    readonly finished_at: string | null;
 } & BaseEntrant
 
 export type EnrichedEntrant = {
-    readonly finish_time?: ComparableDuration;
-    readonly finished_at?: Date;
+    readonly finish_time: ComparableDuration | null;
+    readonly finished_at: Date | null;
 } & BaseEntrant
 
 export type Category = {
@@ -92,7 +92,7 @@ export type Category = {
     readonly slug: string;
     readonly url: string;
     readonly data_url: string;
-    readonly image: string;
+    readonly image: string | null;
     readonly info?: string;
     readonly streaming_required?: boolean;
     readonly owners?: User[];
@@ -141,9 +141,9 @@ type BaseRace = {
 export type EnrichedRace = {
     readonly opened_at: Date;
     readonly start_delay?: Duration;
-    readonly started_at?: Date;
-    readonly ended_at?: Date;
-    readonly cancelled_at?: Date;
+    readonly started_at?: Date | null;
+    readonly ended_at?: Date | null;
+    readonly cancelled_at?: Date | null;
     readonly time_limit: Duration;
     readonly chat_message_delay?: Duration;
     readonly entrants?: EnrichedEntrant[];
@@ -152,9 +152,9 @@ export type EnrichedRace = {
 export type Race = {
     readonly opened_at: string;
     readonly start_delay?: string;
-    readonly started_at?: string;
-    readonly ended_at?: string;
-    readonly cancelled_at?: string;
+    readonly started_at?: string | null;
+    readonly ended_at?: string | null;
+    readonly cancelled_at?: string | null;
     readonly time_limit: string;
     readonly chat_message_delay?: string;
     readonly entrants?: Entrant[];
