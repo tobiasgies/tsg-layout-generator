@@ -82,6 +82,7 @@ export class FaceOffStats {
                 stats.third++;
             }
         } else if (this.FORFEIT_STATUS.includes(entrant.status.value)) {
+            stats.joined++;
             stats.forfeits++;
         }
     }

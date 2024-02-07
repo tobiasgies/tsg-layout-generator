@@ -2,8 +2,12 @@ export class MidosHouse {
     private standardGoals: string[] = []
     private lastFetch: Date
 
-    private readonly MH_URL = "https://midos.house/api/v1/graphql";
+    private readonly baseUrl: string;
     private readonly TEN_MINUTES = 10 * 60 * 1000;
+
+    public constructor(baseUrl: string = "https://midos.house/api/v1/graphql") {
+        this.baseUrl = baseUrl
+    }
 
     /**
      * Returns whether a given custom goal name is a standard tournament goal managed by Midos House
@@ -53,7 +57,7 @@ export class MidosHouse {
      */
     private fetchStandardGoals(): string[] {
         // Fetch schedule from midos.house GraphQL API
-        const fetchUrl = encodeURI(`${this.MH_URL}?query={goalNames}`)
+        const fetchUrl = encodeURI(`${this.baseUrl}?query={goalNames}`)
         const request = UrlFetchApp.fetch(fetchUrl);
         const response = JSON.parse(request.getContentText());
         return response.data.goalNames.filter(this.isStandardGoalName)
