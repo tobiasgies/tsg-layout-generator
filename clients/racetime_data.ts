@@ -11,7 +11,7 @@ export type User = {
     readonly pronouns: string | null;
     readonly flair: string;
     readonly twitch_name: string | null;
-    readonly twitch_display_name: string;
+    readonly twitch_display_name: string | null;
     readonly twitch_channel: string | null;
     readonly can_moderate: boolean;
     readonly stats?: UserStats;
