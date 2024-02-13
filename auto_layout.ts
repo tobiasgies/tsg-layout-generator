@@ -16,64 +16,6 @@ function replaceElementText(slide: Slide, elementId: string, newText: string) {
     elementText.setText(newText);
 }
 
-function layoutTitleSlide(slide: Slide, player1: Player, player2: Player) {
-    replaceElementText(slide, "g207c0db1c30_0_0", player1.name);
-    replaceElementText(slide, "g207c0db1c30_0_1", player2.name);
-}
-
-function layoutRaceSlide(slide: Slide, player1: Player, player2: Player, group: string) {
-    replaceElementText(slide, "g20587f4170f_0_24", player1.name);
-    replaceElementText(slide, "g20587f4170f_0_25", player1.twitch);
-    replaceElementText(slide, "g20587f4170f_0_31", player1.rank.toString());
-    replaceElementText(slide, "g20587f4170f_0_26", player1.country);
-    replaceElementText(slide, "g20f29317d6f_0_0", player1.pronouns);
-
-    replaceElementText(slide, "g20587f4170f_0_27", player2.name);
-    replaceElementText(slide, "g20587f4170f_0_28", player2.twitch);
-    replaceElementText(slide, "g20587f4170f_0_30", player2.rank.toString());
-    replaceElementText(slide, "g20587f4170f_0_29", player2.country);
-    replaceElementText(slide, "g20f29317d6f_0_1", player2.pronouns);
-
-    replaceElementText(slide, "g20587f4170f_0_23", group);
-}
-
-function LayoutStatsSlide(slide: Slide, player1Stats: PlayerStats, player2Stats: PlayerStats, faceOffStats: FaceOffStats) {
-    replaceElementText(slide, "g20587f4170f_0_38", player1Stats.player.name);
-    replaceElementText(slide, "g20587f4170f_0_40", player1Stats.player.twitch);
-    replaceElementText(slide, "g20587f4170f_0_57", player1Stats.player.rank.toString());
-    replaceElementText(slide, "g20f29317d6f_0_2", player1Stats.player.pronouns);
-    replaceElementText(slide, "g20587f4170f_0_41", player2Stats.player.name);
-    replaceElementText(slide, "g20587f4170f_0_43", player2Stats.player.twitch);
-    replaceElementText(slide, "g20587f4170f_0_56", player2Stats.player.rank.toString());
-    replaceElementText(slide, "g20f29317d6f_0_3", player2Stats.player.pronouns);
-
-    replaceElementText(slide, "g20587f4170f_0_72", player1Stats.numberOfRaces.toString());
-    replaceElementText(slide, "g20587f4170f_0_70", player2Stats.numberOfRaces.toString());
-
-    replaceElementText(slide, "g20587f4170f_0_64", faceOffStats.player1Wins.toString());
-    replaceElementText(slide, "g20587f4170f_0_67", faceOffStats.player1WinPercentage.toString());
-    replaceElementText(slide, "g20587f4170f_0_65", faceOffStats.player2Wins.toString());
-    replaceElementText(slide, "g20587f4170f_0_68", faceOffStats.player2WinPercentage.toString());
-    replaceElementText(slide, "g20587f4170f_0_66", faceOffStats.draws.toString());
-    replaceElementText(slide, "g20587f4170f_0_69", faceOffStats.drawPercentage.toString());
-    replaceElementText(slide, "g20587f4170f_0_59", faceOffStats.encounters.toString());
-
-    replaceElementText(slide, "g20587f4170f_0_44", player1Stats.numberOfWins.toString());
-    replaceElementText(slide, "g20587f4170f_0_45", player1Stats.numberOfSeconds.toString());
-    replaceElementText(slide, "g20587f4170f_0_46", player1Stats.numberOfThirds.toString());
-    replaceElementText(slide, "g20587f4170f_0_47", player1Stats.numberOfForfeits.toString());
-
-    replaceElementText(slide, "g20587f4170f_0_48", player2Stats.numberOfWins.toString());
-    replaceElementText(slide, "g20587f4170f_0_49", player2Stats.numberOfSeconds.toString());
-    replaceElementText(slide, "g20587f4170f_0_50", player2Stats.numberOfThirds.toString());
-    replaceElementText(slide, "g20587f4170f_0_51", player2Stats.numberOfForfeits.toString());
-
-    replaceElementText(slide, "g20587f4170f_0_52", player1Stats.bestTime);
-    replaceElementText(slide, "g20587f4170f_0_54", player1Stats.bestTimeDate.toString());
-
-    replaceElementText(slide, "g20587f4170f_0_53", player2Stats.bestTime);
-    replaceElementText(slide, "g20587f4170f_0_55", player2Stats.bestTimeDate.toString());
-}
 
 function autoLayout(): void {
     var ui = SpreadsheetApp.getUi();
