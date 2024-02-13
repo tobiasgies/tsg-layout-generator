@@ -1,21 +1,13 @@
 // Replace "presentationId" with the actual ID of the Google Slides presentation
 import Slide = GoogleAppsScript.Slides.Slide;
 import {Player} from "./data/player";
-import {FaceOffStats} from "./data/face_off_stats";
 import {PlayerStats} from "./data/player_stats";
+import {FaceOffStats} from "./stats_calculator";
 
 var presentationId = "CHANGEME";
 
 // Replace "tabName" with the name of the tab that contains the cell
 var tabName = "Layout";
-
-function replaceElementText(slide: Slide, elementId: string, newText: string) {
-    const pageElement = slide.getPageElementById(elementId);
-    const elementShape = pageElement.asShape();
-    const elementText = elementShape.getText();
-    elementText.setText(newText);
-}
-
 
 function autoLayout(): void {
     var ui = SpreadsheetApp.getUi();
@@ -101,18 +93,15 @@ function autoLayout(): void {
 
     var encounters = sheet.getRange("AG" + number).getValue();
     var p1win = sheet.getRange("AH" + number).getValue();
-    var p1winpct = sheet.getRange("AQ" + number).getValue();
     var p2win = sheet.getRange("AI" + number).getValue();
-    var p2winpct = sheet.getRange("AR" + number).getValue();
     var draw = sheet.getRange("AJ" + number).getValue();
-    var drawpct = sheet.getRange("AS" + number).getValue();
 
     var faceOffStats = new FaceOffStats({
         encounters: encounters,
         player1Wins: p1win,
-        player2Wins: p1winpct,
-        draws: p2win
-    }, p2winpct, draw, drawpct);
+        player2Wins: p2win,
+        draws: draw
+    });
 
     ui.alert("Stats are now generated, updating slides!");
 
