@@ -37,11 +37,11 @@ export class FaceOffStats {
     constructor({encounters, player1Wins, player2Wins, draws}: MutableFaceOffStats) {
         this.encounters = encounters;
         this.player1Wins = player1Wins;
-        this.player1WinPercentage = player1Wins / encounters;
+        this.player1WinPercentage = player1Wins / encounters * 100;
         this.player2Wins = player2Wins;
-        this.player2WinPercentage = player2Wins / encounters;
+        this.player2WinPercentage = player2Wins / encounters * 100;
         this.draws = draws;
-        this.drawPercentage = draws / encounters;
+        this.drawPercentage = draws / encounters * 100;
     }
 
     static fromRacetime(races: EnrichedRace[], p1: User, p2: User, raceFilter: (race: EnrichedRace) => boolean): FaceOffStats {
