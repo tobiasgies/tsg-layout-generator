@@ -14,4 +14,15 @@ export class Player {
         this.racetimeId = racetimeId;
         this.pronouns = pronouns;
     }
+
+    public toString(): string {
+        return `Player {
+            name: ${this.name},
+            twitch: ${this.twitch},
+            rank: ${this.rank},
+            country: ${this.country},
+            racetimeId: ${this.racetimeId},
+            pronouns: ${this.pronouns}
+        }`;
+    }
 }

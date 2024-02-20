@@ -21,4 +21,18 @@ export class PlayerStats {
         this.numberOfThirds = numberOfThirds;
         this.numberOfForfeits = numberOfForfeits;
     }
+
+    public toString(): string {
+        const bestTimeStr = `${this.bestTime.hours}:${this.bestTime.minutes}:${this.bestTime.seconds}`;
+        return `PlayerStats {
+            player: ${this.player.toString()},
+            numberOfRaces: ${this.numberOfRaces},
+            bestTime: ${bestTimeStr},
+            bestTimeDate: ${(this.bestTimeDate.toISOString())},
+            numberOfWins: ${this.numberOfWins},
+            numberOfSeconds: ${this.numberOfSeconds},
+            numberOfThirds: ${this.numberOfThirds},
+            numberOfForfeits: ${this.numberOfForfeits}
+        }`;
+    }
 }
