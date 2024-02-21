@@ -1,13 +1,53 @@
-// Replace "presentationId" with the actual ID of the Google Slides presentation
-import Slide = GoogleAppsScript.Slides.Slide;
 import {Player} from "./data/player";
 import {PlayerStats} from "./data/player_stats";
 import {FaceOffStats} from "./stats_calculator";
+import {ScheduledRace} from "./data/scheduled_race";
+import {Racetime} from "./clients/racetime";
 
-var presentationId = "CHANGEME";
+function layoutCCS7(): void {
+    const ui = SpreadsheetApp.getUi();
 
-// Replace "tabName" with the name of the tab that contains the cell
-var tabName = "Layout";
+    const sheetsTabId = parseInt(PropertiesService.getScriptProperties().getProperty("CCS7_TAB_ID"));
+    const tab = SpreadsheetApp.getActiveSpreadsheet().getSheets().find(it => it.getSheetId() == sheetsTabId)
+    if (!tab) {
+        ui.alert(`ERROR: Could not find Google Sheets tab that contains race data. Tab ID ${sheetsTabId} not found.`)
+        return;
+    }
+
+    const presentationId = PropertiesService.getScriptProperties().getProperty("CCS7_PRESENTATION_ID");
+    const presentation = SlidesApp.openById(presentationId);
+    if (!presentation) {
+        ui.alert(`ERROR: Could not find Google Slides presentation containing layout. Presentation ${presentationId} not found.`)
+        return;
+    }
+
+    let rowNumber = ui.prompt("Enter the row number of the match").getResponseText();
+    if (isNaN(parseInt(rowNumber))) {
+        ui.alert("Invalid input, please enter a number");
+        return;
+    }
+
+    let row = tab.getRange(`A${rowNumber}:AH${rowNumber}`).getValues()[0];
+    if (!row[12]) {
+        ui.alert("You seem to have selected an empty row - the race ID is not set.")
+        return;
+    }
+
+    let scheduledRace = new ScheduledRace(
+        row[12], row[0], row[1], row[2], row[3], row[4], row[5],
+        row[6],row[7], row[8], row[9], row[10], row[11], row[13]
+    )
+
+    // Fetch runner stats from Racetime and calculate face-off stats
+    let racetime = new Racetime()
+    try {
+        let user1 = racetime.fetchUser(scheduledRace.runner1RacetimeId);
+        let user2 = racetime.fetchUser(scheduledRace.runner2RacetimeId);
+
+    }
+    // Layout slides
+    // Send user to generated slide deck
+}
 
 function autoLayout(): void {
     var ui = SpreadsheetApp.getUi();

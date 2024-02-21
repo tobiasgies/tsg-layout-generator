@@ -14,7 +14,20 @@ export class ScheduledRace {
     readonly runner2Country: string;
     readonly round: string;
 
-    public constructor(raceId: string, title: string, startTime: Date, runner1Id: string, runner1RacetimeId: string, runner1Name: string, runner1QualifierRank: number, runner1Country: string, runner2Id: string, runner2RacetimeId: string, runner2Name: string, runner2QualifierRank: number, runner2Country: string, round: string) {
+    public constructor(raceId: string,
+                       title: string,
+                       startTime: Date,
+                       runner1Id: string,
+                       runner1RacetimeId: string,
+                       runner1Name: string,
+                       runner1QualifierRank: number,
+                       runner1Country: string,
+                       runner2Id: string,
+                       runner2RacetimeId: string,
+                       runner2Name: string,
+                       runner2QualifierRank: number,
+                       runner2Country: string,
+                       round: string) {
         this.raceId = raceId;
         this.title = title;
         this.startTime = startTime;
