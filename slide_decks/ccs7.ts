@@ -3,6 +3,7 @@ import {Player} from "../data/player";
 import Presentation = GoogleAppsScript.Slides.Presentation;
 import {PlayerStats} from "../data/player_stats";
 import {FaceOffStats} from "../data/face_off_stats";
+import {Duration} from "tinyduration";
 
 export class ChallengeCupSeason7 {
     private readonly presentation: Presentation;
@@ -73,19 +74,21 @@ export class ChallengeCupSeason7 {
         this.replaceElementText(slide, "g20587f4170f_0_50", player2Stats.numberOfThirds.toString());
         this.replaceElementText(slide, "g20587f4170f_0_51", player2Stats.numberOfForfeits.toString());
 
-        this.replaceElementText(slide, "g20587f4170f_0_52",
-            `${player1Stats.bestTime.hours}:${player1Stats.bestTime.minutes}:${player1Stats.bestTime.seconds}`);
+        this.replaceElementText(slide, "g20587f4170f_0_52", this.formatDuration(player1Stats.bestTime));
         this.replaceElementText(slide, "g20587f4170f_0_54",
             // @ts-ignore
             player1Stats.bestTimeDate.toLocaleDateString("en-US", this.DATE_FORMAT));
 
-        this.replaceElementText(slide, "g20587f4170f_0_53",
-            `${player2Stats.bestTime.hours}:${player2Stats.bestTime.minutes}:${player2Stats.bestTime.seconds}`);
+        this.replaceElementText(slide, "g20587f4170f_0_53", this.formatDuration(player2Stats.bestTime));
         this.replaceElementText(slide, "g20587f4170f_0_55",
             // @ts-ignore
             player2Stats.bestTimeDate.toLocaleDateString("en-US", this.DATE_FORMAT));
     }
 
+
+    private formatDuration(duration: Duration) {
+        return `${duration.hours}:${duration.minutes}:${duration.seconds}`;
+    }
 
     public layoutRaceSlide(player1: Player, player2: Player, group: string) {
         const slide = this.presentation.getSlideById(this.RACE_SLIDE_2PLAYERS);
@@ -95,10 +98,12 @@ export class ChallengeCupSeason7 {
         this.replaceElementText(slide, "g20587f4170f_0_26", player1.country);
         this.replaceElementText(slide, "g20f29317d6f_0_0", player1.pronouns.toLowerCase());
 
+        // Country flag goes on the right side of country name for P2
+        let reversedCountry = player2.country.split(" ", 2).reverse().join(" ");
         this.replaceElementText(slide, "g20587f4170f_0_27", player2.name);
         this.replaceElementText(slide, "g20587f4170f_0_28", player2.twitch);
         this.replaceElementText(slide, "g20587f4170f_0_30", player2.rank.toString());
-        this.replaceElementText(slide, "g20587f4170f_0_29", player2.country);
+        this.replaceElementText(slide, "g20587f4170f_0_29", reversedCountry);
         this.replaceElementText(slide, "g20f29317d6f_0_1", player2.pronouns.toLowerCase());
 
         this.replaceElementText(slide, "g20587f4170f_0_23", group);

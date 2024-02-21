@@ -122,9 +122,3 @@ type MutableFaceOffStats = {
     player1Stats: MutablePlayerStats,
     player2Stats: MutablePlayerStats
 }
-
-/*
-    const p1Races = racetime.fetchUserRaces(p1).map(enrichRace)
-    const p2Races = racetime.fetchUserRaces(p2).map(enrichRace)
-    const races = [... new Set(p1Races.concat(p2Races))]
- */

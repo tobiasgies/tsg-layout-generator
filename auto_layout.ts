@@ -3,6 +3,7 @@ import {PlayerStats} from "./data/player_stats";
 import {FaceOffStats} from "./stats_calculator";
 import {ScheduledRace} from "./data/scheduled_race";
 import {Racetime} from "./clients/racetime";
+import {enrichRace} from "./clients/racetime_data";
 
 function layoutCCS7(): void {
     const ui = SpreadsheetApp.getUi();
@@ -39,12 +40,19 @@ function layoutCCS7(): void {
     )
 
     // Fetch runner stats from Racetime and calculate face-off stats
-    let racetime = new Racetime()
     try {
-        let user1 = racetime.fetchUser(scheduledRace.runner1RacetimeId);
-        let user2 = racetime.fetchUser(scheduledRace.runner2RacetimeId);
-
+        let racetime = new Racetime()
+        let races = [scheduledRace.runner1RacetimeId, scheduledRace.runner2RacetimeId]
+            .map(racetime.fetchUser)
+            .flatMap(racetime.fetchUserRaces)
+            .map(enrichRace)
+        let racesDedup = [... new Set(races)]
+    } catch (e) {
+        ui.alert(`Sorry, but an error occured fetching data from racetime.gg: ${e.message}`)
+        return;
     }
+
+
     // Layout slides
     // Send user to generated slide deck
 }
