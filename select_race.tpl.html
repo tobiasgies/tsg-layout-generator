@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <base target="_top">
+    <style>
+        body {
+            font-family: "Roboto","RobotoDraft","Helvetica","Arial",sans-serif;
+            font-size: 14px;
+            font-weight: 400;
+        }
+        #success-message {
+            border: 1px solid #060;
+            background-color: #afa;
+            padding: 9px;
+        }
+        #error-message {
+            border: 1px solid #600;
+            background-color: #faa;
+            padding: 9px;
+        }
+    </style>
+    <script>
+        function startGeneration() {
+            let selectedRace = document.getElementById("race-selector").value;
+            google.script.run
+                .withSuccessHandler(openGeneratedSlides)
+                .withFailureHandler(displayErrorMessage)
+                .layoutCCS7(selectedRace)
+        }
+
+        function openGeneratedSlides(url) {
+            document.getElementById("select-race-dialog").insertAdjacentHTML("afterend",
+                '<div id="success-message"><p>Attempting to open generated slides. ' +
+                'If this does not work, please <a href="' + url +'">click here.</a></p></div>'
+            )
+            window.open(url, "_blank");
+            window.setTimeout(() => google.script.host.close(), 15000);
+        }
+
+        function displayErrorMessage(error) {
+            document.getElementById("select-race-dialog").insertAdjacentHTML("afterend",
+                '<div id="error-message"><p>An error occured: ' + error.message + '</p></div>'
+            )
+            console.error("An error occurred while generating a restream layout.", error)
+            window.setTimeout(() => google.script.host.close(), 15000);
+        }
+
+        window.addEventListener("load", () => document.getElementById("generate").addEventListener("click", (ev) => {
+            ev.preventDefault()
+            ev.target.setAttribute("disabled", "")
+            ev.target.innerText = "Processing, please wait..."
+            startGeneration()
+        }))
+    </script>
+</head>
+<body>
+<div id="select-race-dialog">
+    <p>Please select a race to prepare a restream layout.</p>
+    <p>
+        <select id="race-selector">
+            <? for (race of races) { ?>
+            <option value="<?= race.raceId ?>"><?= race.title ?> - <?= race.round ?></option> +
+            <? } ?>
+        </select>
+    </p>
+    <p><button id="generate">Generate restream layout</button></p>
+</div>
+</body>
+</html>
