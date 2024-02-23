@@ -1,0 +1,15 @@
+{
+  "rootDir": ".",
+  "filePushOrder": [
+    "util/duration.ts",
+    "data/player.ts",
+    "data/scheduled_race.ts",
+    "clients/midos_house.ts",
+    "clients/racetime_data.ts",
+    "clients/racetime.ts",
+    "slide_decks/ccs7.ts",
+    "stats_calculator.ts",
+    "create_menu.ts",
+    "auto_layout.ts"
+  ]
+}

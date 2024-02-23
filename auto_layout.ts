@@ -64,7 +64,10 @@ function layoutCCS7(): void {
 
         const link = ccs7.getPresentationLink();
         SpreadsheetApp.getUi().showModelessDialog(HtmlService.createHtmlOutput(
-            '<script>window.open("' + link + '");google.script.host.close();</script>' +
+            '<script>' +
+                'window.open("' + link + '", "_blank");' +
+                'window.setTimeout(() => google.script.host.close(), 15000);' +
+            '</script>' +
             '<p>Attempting to open generated slides. If this does not work, please <a href="' + link +'">click here.</a></p>'
         ), 'Opening...');
     } catch (e) {
