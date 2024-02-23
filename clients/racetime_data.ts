@@ -1,6 +1,3 @@
-import {Duration} from "tinyduration";
-import {ComparableDuration, parse} from "../data/comparable_duration";
-
 export type User = {
     readonly id: string;
     readonly full_name: string;
@@ -62,7 +59,7 @@ export type EntrantStatus = {
     readonly help_text: string;
 }
 
-type BaseEntrant = {
+export type Entrant = {
     readonly user: User;
     readonly team?: Team;
     readonly status: EntrantStatus;
@@ -74,17 +71,9 @@ type BaseEntrant = {
     readonly has_comment: boolean;
     readonly stream_live: boolean;
     readonly stream_override: boolean;
-}
-
-export type Entrant = {
     readonly finish_time: string | null;
     readonly finished_at: string | null;
-} & BaseEntrant
-
-export type EnrichedEntrant = {
-    readonly finish_time: ComparableDuration | null;
-    readonly finished_at: Date | null;
-} & BaseEntrant
+}
 
 export type Category = {
     readonly name: string;
@@ -102,7 +91,7 @@ export type Category = {
     readonly emotes?: {[name: string]: string};
 }
 
-type BaseRace = {
+export type Race = {
     readonly version?: number;
     readonly name: string;
     readonly slug?: string;
@@ -136,20 +125,6 @@ type BaseRace = {
     readonly allow_prerace_chat?: boolean;
     readonly allow_midrace_chat?: boolean;
     readonly allow_non_entrant_chat?: boolean;
-}
-
-export type EnrichedRace = {
-    readonly opened_at: Date;
-    readonly start_delay?: Duration;
-    readonly started_at?: Date | null;
-    readonly ended_at?: Date | null;
-    readonly cancelled_at?: Date | null;
-    readonly time_limit: Duration;
-    readonly chat_message_delay?: Duration;
-    readonly entrants?: EnrichedEntrant[];
-} & BaseRace
-
-export type Race = {
     readonly opened_at: string;
     readonly start_delay?: string;
     readonly started_at?: string | null;
@@ -158,26 +133,4 @@ export type Race = {
     readonly time_limit: string;
     readonly chat_message_delay?: string;
     readonly entrants?: Entrant[];
-} & BaseRace
-
-export function enrichEntrant(entrant: Entrant): EnrichedEntrant {
-    return {
-        ...entrant,
-        finish_time: (!!entrant.finish_time) ? parse(entrant.finish_time) : null,
-        finished_at: (!!entrant.finished_at) ? new Date(entrant.finished_at) : null
-    };
-}
-
-export function enrichRace(race: Race): EnrichedRace {
-    return {
-        ...race,
-        opened_at: new Date(race.opened_at),
-        start_delay: (!!race.start_delay) ? parse(race.start_delay) : null,
-        started_at: (!!race.started_at) ? new Date(race.started_at) : null,
-        ended_at: (!!race.ended_at) ? new Date(race.ended_at) : null,
-        cancelled_at: (!!race.cancelled_at) ? new Date(race.cancelled_at) : null,
-        time_limit: parse(race.time_limit),
-        chat_message_delay: (!!race.chat_message_delay) ? parse(race.chat_message_delay) : null,
-        entrants: (!!race.entrants) ? race.entrants.map(enrichEntrant) : null
-    };
 }

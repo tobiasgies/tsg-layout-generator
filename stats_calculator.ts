@@ -1,7 +1,6 @@
-import {ComparableDuration} from "./data/comparable_duration";
-import {EnrichedEntrant, EnrichedRace} from "./clients/racetime_data";
 import {Player} from "./data/player";
-import {Duration} from "tinyduration";
+import {Duration, DurationUtils} from "./util/duration";
+import {Entrant, Race} from "./clients/racetime_data";
 
 export class FaceOffStats {
     readonly encounters: number;
@@ -51,7 +50,7 @@ export class FaceOffStats {
         this.drawPercentage = draws / encounters * 100;
     }
 
-    public static fromRacetime(races: EnrichedRace[], p1: Player, p2: Player, raceFilter: (race: EnrichedRace) => boolean): FaceOffStats {
+    public static fromRacetime(races: Race[], p1: Player, p2: Player, raceFilter: (race: Race) => boolean): FaceOffStats {
         let faceOffStats = races.reduce((acc, current) => {
             if (!raceFilter(current)) {
                 return acc;
@@ -60,13 +59,13 @@ export class FaceOffStats {
             const p2Entrant = current.entrants.find((entrant) => entrant.user.id == p2.racetimeId);
 
             if (!!p1Entrant && !!p2Entrant) {
-                this.updateFaceOffStats(acc, p1Entrant, p2Entrant);
+                FaceOffStats.updateFaceOffStats(acc, p1Entrant, p2Entrant);
             }
             if (!!p1Entrant) {
-                this.updatePlayerStats(acc.player1Stats, p1Entrant);
+                FaceOffStats.updatePlayerStats(acc.player1Stats, p1Entrant);
             }
             if (!!p2Entrant) {
-                this.updatePlayerStats(acc.player2Stats, p2Entrant);
+                FaceOffStats.updatePlayerStats(acc.player2Stats, p2Entrant);
             }
             return acc;
         }, this.EMPTY_STATS)
@@ -74,12 +73,12 @@ export class FaceOffStats {
         return new FaceOffStats(faceOffStats, p1, p2)
     }
 
-    private static updatePlayerStats(stats: MutablePlayerStats, entrant: EnrichedEntrant) {
+    private static updatePlayerStats(stats: MutablePlayerStats, entrant: Entrant) {
         if (entrant.status.value == "done") {
             stats.joined++;
-            if (!stats.bestTime || entrant.finish_time < stats.bestTime) {
-                stats.bestTime = entrant.finish_time;
-                stats.bestTimeAt = entrant.finished_at;
+            if (!stats.bestTime || DurationUtils.durationInSeconds(entrant.finish_time) < DurationUtils.durationInSeconds(stats.bestTime)) {
+                stats.bestTime = DurationUtils.parseDuration(entrant.finish_time);
+                stats.bestTimeAt = new Date(entrant.finished_at);
             }
             if (entrant.place == 1) {
                 stats.first++;
@@ -94,7 +93,7 @@ export class FaceOffStats {
         }
     }
 
-    private static updateFaceOffStats(stats: MutableFaceOffStats, p1Entrant: EnrichedEntrant, p2Entrant: EnrichedEntrant) {
+    private static updateFaceOffStats(stats: MutableFaceOffStats, p1Entrant: Entrant, p2Entrant: Entrant) {
         if (this.RACE_COMPLETE_STATUS.includes(p1Entrant.status.value) && this.RACE_COMPLETE_STATUS.includes(p2Entrant.status.value)) {
             if (p1Entrant.place == p2Entrant.place) {
                 stats.draws++;
@@ -148,7 +147,7 @@ export class PlayerStats {
 }
 
 type MutablePlayerStats = {
-    bestTime?: ComparableDuration,
+    bestTime?: Duration,
     bestTimeAt?: Date,
     joined: number,
     first: number,

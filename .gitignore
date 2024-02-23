@@ -2,6 +2,9 @@
 node_modules/
 .clasp.json
 
+# Javascript files downloaded by clasp from Google Apps Script
+*.js
+
 # JetBrains IDEs
 .idea/
 *.iws

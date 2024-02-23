@@ -2,7 +2,7 @@ import Slide = GoogleAppsScript.Slides.Slide;
 import {Player} from "../data/player";
 import Presentation = GoogleAppsScript.Slides.Presentation;
 import {FaceOffStats} from "../stats_calculator";
-import {Duration} from "tinyduration";
+import {Duration} from "../util/duration";
 
 export class ChallengeCupSeason7 {
     private readonly presentation: Presentation;

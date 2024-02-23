@@ -2,13 +2,13 @@ import {Player} from "./data/player";
 import {FaceOffStats} from "./stats_calculator";
 import {ScheduledRace} from "./data/scheduled_race";
 import {Racetime} from "./clients/racetime";
-import {EnrichedRace, enrichRace} from "./clients/racetime_data";
 import {MidosHouse} from "./clients/midos_house";
 import {ChallengeCupSeason7} from "./slide_decks/ccs7";
+import {Race} from "./clients/racetime_data";
 
 const midos = new MidosHouse()
 
-function filterCCS7Races(race: EnrichedRace): boolean {
+function filterCCS7Races(race: Race): boolean {
     return (race.goal.custom == false && race.goal.name == "Standard Ruleset") ||
         (race.goal.custom == true && midos.isStandardGoal(race.goal.name))
 }
@@ -54,7 +54,7 @@ function layoutCCS7(): void {
         const user2 = racetime.fetchUser(scheduledRace.runner2RacetimeId);
         const player1 = new Player(scheduledRace.runner1Name, user1.twitch_name, scheduledRace.runner1QualifierRank, scheduledRace.runner1Country, user1.id, user1.pronouns);
         const player2 = new Player(scheduledRace.runner2Name, user2.twitch_name, scheduledRace.runner2QualifierRank, scheduledRace.runner2Country, user2.id, user2.pronouns);
-        const races = [user1, user2].flatMap(racetime.fetchUserRaces).map(enrichRace);
+        const races: Race[] = [user1, user2].flatMap(racetime.fetchUserRaces.bind(racetime));
         const racesDedup = [... new Set(races)];
         const stats = FaceOffStats.fromRacetime(racesDedup, player1, player2, filterCCS7Races);
         const ccs7 = new ChallengeCupSeason7(presentation);
@@ -69,9 +69,6 @@ function layoutCCS7(): void {
         ), 'Opening...');
     } catch (e) {
         ui.alert(`Sorry, but an error occured fetching data from racetime.gg: ${e.message}`)
-        return;
+        throw e;
     }
-
-    // Layout slides
-    // Send user to generated slide deck
 }
