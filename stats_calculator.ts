@@ -95,6 +95,7 @@ export class FaceOffStats {
 
     private static updateFaceOffStats(stats: MutableFaceOffStats, p1Entrant: Entrant, p2Entrant: Entrant) {
         if (this.RACE_COMPLETE_STATUS.includes(p1Entrant.status.value) && this.RACE_COMPLETE_STATUS.includes(p2Entrant.status.value)) {
+            stats.encounters++;
             if (p1Entrant.place == p2Entrant.place) {
                 stats.draws++;
             } else if (p1Entrant.place != null && p2Entrant.place == null) {

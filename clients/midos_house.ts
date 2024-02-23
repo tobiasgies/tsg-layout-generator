@@ -31,6 +31,7 @@ export class MidosHouse {
             || (Date.now() - this.lastFetch.valueOf()) > this.TEN_MINUTES) {
             try {
                 this.standardGoals = this.fetchStandardGoals();
+                console.log(`Fetched updated standard goals from Midos House: ${this.standardGoals.join(', ')}`)
                 this.lastFetch = new Date()
             } catch (e) {
                 if (this.standardGoals.length > 0) {
