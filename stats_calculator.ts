@@ -1,12 +1,16 @@
 import {ComparableDuration} from "./data/comparable_duration";
-import {EnrichedEntrant, EnrichedRace, User} from "./clients/racetime_data";
+import {EnrichedEntrant, EnrichedRace} from "./clients/racetime_data";
+import {Player} from "./data/player";
+import {Duration} from "tinyduration";
 
 export class FaceOffStats {
     readonly encounters: number;
     readonly player1Wins: number;
     readonly player1WinPercentage: number;
+    readonly player1Stats: PlayerStats;
     readonly player2Wins: number;
     readonly player2WinPercentage: number;
+    readonly player2Stats: PlayerStats;
     readonly draws: number;
     readonly drawPercentage: number;
 
@@ -34,23 +38,26 @@ export class FaceOffStats {
     static readonly FORFEIT_STATUS = ["dnf", "dq"];
     static readonly RACE_COMPLETE_STATUS = ["done", ...this.FORFEIT_STATUS];
 
-    constructor({encounters, player1Wins, player2Wins, draws}: MutableFaceOffStats) {
+    constructor({encounters, player1Wins, player2Wins, draws, player1Stats, player2Stats}: MutableFaceOffStats,
+                p1: Player, p2: Player) {
         this.encounters = encounters;
         this.player1Wins = player1Wins;
         this.player1WinPercentage = player1Wins / encounters * 100;
+        this.player1Stats = new PlayerStats(player1Stats, p1);
         this.player2Wins = player2Wins;
         this.player2WinPercentage = player2Wins / encounters * 100;
+        this.player2Stats = new PlayerStats(player2Stats, p2);
         this.draws = draws;
         this.drawPercentage = draws / encounters * 100;
     }
 
-    static fromRacetime(races: EnrichedRace[], p1: User, p2: User, raceFilter: (race: EnrichedRace) => boolean): FaceOffStats {
+    public static fromRacetime(races: EnrichedRace[], p1: Player, p2: Player, raceFilter: (race: EnrichedRace) => boolean): FaceOffStats {
         let faceOffStats = races.reduce((acc, current) => {
             if (!raceFilter(current)) {
                 return acc;
             }
-            const p1Entrant = current.entrants.find((entrant) => entrant.user.id == p1.id);
-            const p2Entrant = current.entrants.find((entrant) => entrant.user.id == p2.id);
+            const p1Entrant = current.entrants.find((entrant) => entrant.user.id == p1.racetimeId);
+            const p2Entrant = current.entrants.find((entrant) => entrant.user.id == p2.racetimeId);
 
             if (!!p1Entrant && !!p2Entrant) {
                 this.updateFaceOffStats(acc, p1Entrant, p2Entrant);
@@ -64,7 +71,7 @@ export class FaceOffStats {
             return acc;
         }, this.EMPTY_STATS)
 
-        return new FaceOffStats(faceOffStats)
+        return new FaceOffStats(faceOffStats, p1, p2)
     }
 
     private static updatePlayerStats(stats: MutablePlayerStats, entrant: EnrichedEntrant) {
@@ -101,6 +108,42 @@ export class FaceOffStats {
                 stats.player2Wins++;
             }
         }
+    }
+}
+
+export class PlayerStats {
+    readonly player: Player;
+    readonly joined: number;
+    readonly bestTime?: Duration;
+    readonly bestTimeAt?: Date;
+    readonly first: number;
+    readonly second: number;
+    readonly third: number;
+    readonly forfeits: number;
+
+    constructor({ joined, bestTime, bestTimeAt, first, second, third, forfeits }: MutablePlayerStats, player: Player) {
+        this.player = player;
+        this.joined = joined;
+        this.bestTime = bestTime;
+        this.bestTimeAt = bestTimeAt;
+        this.first = first;
+        this.second = second;
+        this.third = third;
+        this.forfeits = forfeits;
+    }
+
+    public toString(): string {
+        const bestTimeStr = `${this.bestTime.hours}:${this.bestTime.minutes}:${this.bestTime.seconds}`;
+        return `PlayerStats {
+            player: ${this.player.toString()},
+            numberOfRaces: ${this.joined},
+            bestTime: ${bestTimeStr},
+            bestTimeDate: ${(this.bestTimeAt.toISOString())},
+            numberOfWins: ${this.first},
+            numberOfSeconds: ${this.second},
+            numberOfThirds: ${this.third},
+            numberOfForfeits: ${this.forfeits}
+        }`;
     }
 }
 

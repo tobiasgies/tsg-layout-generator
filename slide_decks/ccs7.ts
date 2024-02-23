@@ -1,8 +1,7 @@
 import Slide = GoogleAppsScript.Slides.Slide;
 import {Player} from "../data/player";
 import Presentation = GoogleAppsScript.Slides.Presentation;
-import {PlayerStats} from "../data/player_stats";
-import {FaceOffStats} from "../data/face_off_stats";
+import {FaceOffStats} from "../stats_calculator";
 import {Duration} from "tinyduration";
 
 export class ChallengeCupSeason7 {
@@ -31,15 +30,18 @@ export class ChallengeCupSeason7 {
         elementText.setText(newText);
     }
 
-    public layoutTitleSlide(player1: Player, player2: Player, group: string) {
+    public layoutTitleSlide(player1: Player, player2: Player, round: string) {
         const slide = this.presentation.getSlideById(this.TITLE_SLIDE_2PLAYERS);
-        this.replaceElementText(slide, "g2afd7ae3b2d_0_0", group);
+        this.replaceElementText(slide, "g2afd7ae3b2d_0_0", round);
         this.replaceElementText(slide, "g207c0db1c30_0_0", player1.name);
         this.replaceElementText(slide, "g2afd7ae3b2d_0_1", `#${player1.rank}`);
         this.replaceElementText(slide, "g207c0db1c30_0_1", player2.name);
         this.replaceElementText(slide, "g2afd7ae3b2d_0_2", `#${player2.rank}`);
     }
-    public layoutStatsSlide(player1Stats: PlayerStats, player2Stats: PlayerStats, faceOffStats: FaceOffStats) {
+    public layoutStatsSlide(faceOffStats: FaceOffStats) {
+        let player1Stats = faceOffStats.player1Stats;
+        let player2Stats = faceOffStats.player2Stats;
+
         const slide = this.presentation.getSlideById(this.STATS_SLIDE_2PLAYERS);
         this.replaceElementText(slide, "g20587f4170f_0_38", player1Stats.player.name);
         this.replaceElementText(slide, "g20587f4170f_0_40", player1Stats.player.twitch);
@@ -50,44 +52,32 @@ export class ChallengeCupSeason7 {
         this.replaceElementText(slide, "g20587f4170f_0_56", player2Stats.player.rank.toString());
         this.replaceElementText(slide, "g20f29317d6f_0_3", player2Stats.player.pronouns.toLowerCase());
 
-        this.replaceElementText(slide, "g20587f4170f_0_72", player1Stats.numberOfRaces.toString());
-        this.replaceElementText(slide, "g20587f4170f_0_70", player2Stats.numberOfRaces.toString());
+        this.replaceElementText(slide, "g20587f4170f_0_72", player1Stats.joined.toString());
+        this.replaceElementText(slide, "g20587f4170f_0_70", player2Stats.joined.toString());
 
         this.replaceElementText(slide, "g20587f4170f_0_64", faceOffStats.player1Wins.toString());
-        this.replaceElementText(slide, "g20587f4170f_0_67",
-            (Math.round(faceOffStats.player1WinPercentage * 10) / 10).toFixed(1));
+        this.replaceElementText(slide, "g20587f4170f_0_67", this.formatPercent(faceOffStats.player1WinPercentage));
         this.replaceElementText(slide, "g20587f4170f_0_65", faceOffStats.player2Wins.toString());
-        this.replaceElementText(slide, "g20587f4170f_0_68",
-            (Math.round(faceOffStats.player2WinPercentage * 10) / 10).toFixed(1));
+        this.replaceElementText(slide, "g20587f4170f_0_68", this.formatPercent(faceOffStats.player2WinPercentage));
         this.replaceElementText(slide, "g20587f4170f_0_66", faceOffStats.draws.toString());
-        this.replaceElementText(slide, "g20587f4170f_0_69",
-            (Math.round(faceOffStats.drawPercentage * 10) / 10).toFixed(1));
+        this.replaceElementText(slide, "g20587f4170f_0_69", this.formatPercent(faceOffStats.drawPercentage));
         this.replaceElementText(slide, "g20587f4170f_0_59", faceOffStats.encounters.toString());
 
-        this.replaceElementText(slide, "g20587f4170f_0_44", player1Stats.numberOfWins.toString());
-        this.replaceElementText(slide, "g20587f4170f_0_45", player1Stats.numberOfSeconds.toString());
-        this.replaceElementText(slide, "g20587f4170f_0_46", player1Stats.numberOfThirds.toString());
-        this.replaceElementText(slide, "g20587f4170f_0_47", player1Stats.numberOfForfeits.toString());
+        this.replaceElementText(slide, "g20587f4170f_0_44", player1Stats.first.toString());
+        this.replaceElementText(slide, "g20587f4170f_0_45", player1Stats.second.toString());
+        this.replaceElementText(slide, "g20587f4170f_0_46", player1Stats.third.toString());
+        this.replaceElementText(slide, "g20587f4170f_0_47", player1Stats.forfeits.toString());
 
-        this.replaceElementText(slide, "g20587f4170f_0_48", player2Stats.numberOfWins.toString());
-        this.replaceElementText(slide, "g20587f4170f_0_49", player2Stats.numberOfSeconds.toString());
-        this.replaceElementText(slide, "g20587f4170f_0_50", player2Stats.numberOfThirds.toString());
-        this.replaceElementText(slide, "g20587f4170f_0_51", player2Stats.numberOfForfeits.toString());
+        this.replaceElementText(slide, "g20587f4170f_0_48", player2Stats.first.toString());
+        this.replaceElementText(slide, "g20587f4170f_0_49", player2Stats.second.toString());
+        this.replaceElementText(slide, "g20587f4170f_0_50", player2Stats.third.toString());
+        this.replaceElementText(slide, "g20587f4170f_0_51", player2Stats.forfeits.toString());
 
         this.replaceElementText(slide, "g20587f4170f_0_52", this.formatDuration(player1Stats.bestTime));
-        this.replaceElementText(slide, "g20587f4170f_0_54",
-            // @ts-ignore
-            player1Stats.bestTimeDate.toLocaleDateString("en-US", this.DATE_FORMAT));
+        this.replaceElementText(slide, "g20587f4170f_0_54", this.formatDate(player1Stats.bestTimeAt));
 
         this.replaceElementText(slide, "g20587f4170f_0_53", this.formatDuration(player2Stats.bestTime));
-        this.replaceElementText(slide, "g20587f4170f_0_55",
-            // @ts-ignore
-            player2Stats.bestTimeDate.toLocaleDateString("en-US", this.DATE_FORMAT));
-    }
-
-
-    private formatDuration(duration: Duration) {
-        return `${duration.hours}:${duration.minutes}:${duration.seconds}`;
+        this.replaceElementText(slide, "g20587f4170f_0_55", this.formatDate(player2Stats.bestTimeAt));
     }
 
     public layoutRaceSlide(player1: Player, player2: Player, group: string) {
@@ -107,5 +97,31 @@ export class ChallengeCupSeason7 {
         this.replaceElementText(slide, "g20f29317d6f_0_1", player2.pronouns.toLowerCase());
 
         this.replaceElementText(slide, "g20587f4170f_0_23", group);
+    }
+
+    public getPresentationLink() {
+        return `https://docs.google.com/presentation/d/${this.presentation.getId()}/edit#slide=id.${this.TITLE_SLIDE_2PLAYERS}`;
+    }
+
+    private formatDate(date?: Date) {
+        if (!date) {
+            return "";
+        } else {
+            // @ts-ignore
+            return date.toLocaleDateString("en-US", this.DATE_FORMAT);
+        }
+    }
+
+    private formatDuration(duration?: Duration) {
+        if (!duration) {
+            return "0:00:00";
+        }
+        else {
+            return `${duration.hours}:${duration.minutes.toString().padStart(2, "0")}:${duration.seconds.toString().padStart(2, "0")}`;
+        }
+    }
+
+    private formatPercent(percent: number) {
+        return (Math.round(percent * 10) / 10).toFixed(1) + "%";
     }
 }
