@@ -70,6 +70,6 @@ export class MidosHouse {
      * @private
      */
     private isStandardGoalName(goalName: string): boolean {
-        return !goalName.toLowerCase().includes("multiworld");
+        return goalName?.toLowerCase()?.includes("multiworld") == false;
     }
 }

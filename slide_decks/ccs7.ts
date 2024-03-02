@@ -46,11 +46,11 @@ export class ChallengeCupSeason7 {
         this.replaceElementText(slide, "g20587f4170f_0_38", player1Stats.player.name);
         this.replaceElementText(slide, "g20587f4170f_0_40", player1Stats.player.twitch);
         this.replaceElementText(slide, "g20587f4170f_0_57", `#${player1Stats.player.rank}`);
-        this.replaceElementText(slide, "g20f29317d6f_0_2", player1Stats.player.pronouns.toLowerCase());
+        this.replaceElementText(slide, "g20f29317d6f_0_2", player1Stats.player.pronouns?.toLowerCase() ?? "");
         this.replaceElementText(slide, "g20587f4170f_0_41", player2Stats.player.name);
         this.replaceElementText(slide, "g20587f4170f_0_43", player2Stats.player.twitch);
         this.replaceElementText(slide, "g20587f4170f_0_56", `#${player2Stats.player.rank}`);
-        this.replaceElementText(slide, "g20f29317d6f_0_3", player2Stats.player.pronouns.toLowerCase());
+        this.replaceElementText(slide, "g20f29317d6f_0_3", player2Stats.player.pronouns?.toLowerCase() ?? "");
 
         this.replaceElementText(slide, "g20587f4170f_0_72", player1Stats.joined.toString());
         this.replaceElementText(slide, "g20587f4170f_0_70", player2Stats.joined.toString());
@@ -86,7 +86,7 @@ export class ChallengeCupSeason7 {
         this.replaceElementText(slide, "g20587f4170f_0_25", player1.twitch);
         this.replaceElementText(slide, "g20587f4170f_0_31", `#${player1.rank}`);
         this.replaceElementText(slide, "g20587f4170f_0_26", player1.country);
-        this.replaceElementText(slide, "g20f29317d6f_0_0", player1.pronouns.toLowerCase());
+        this.replaceElementText(slide, "g20f29317d6f_0_0", player1.pronouns?.toLowerCase() ?? "");
 
         // Country flag goes on the right side of country name for P2
         let reversedCountry = player2.country.split(" ", 2).reverse().join(" ");
@@ -94,7 +94,7 @@ export class ChallengeCupSeason7 {
         this.replaceElementText(slide, "g20587f4170f_0_28", player2.twitch);
         this.replaceElementText(slide, "g20587f4170f_0_30", `#${player2.rank}`);
         this.replaceElementText(slide, "g20587f4170f_0_29", reversedCountry);
-        this.replaceElementText(slide, "g20f29317d6f_0_1", player2.pronouns.toLowerCase());
+        this.replaceElementText(slide, "g20f29317d6f_0_1", player2.pronouns?.toLowerCase() ?? "");
 
         this.replaceElementText(slide, "g20587f4170f_0_23", group);
     }
