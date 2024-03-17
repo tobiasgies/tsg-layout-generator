@@ -13,7 +13,7 @@ export class ChallengeCupSeason7 {
     private readonly TITLE_SLIDE_3PLAYERS = "g2b3dc24f00e_1_0"
     private readonly RACE_SLIDE_3PLAYERS = "g2b1b1a75d12_0_0"
 
-    private readonly FINALS_REGEX = /^(?<remove>\s*Brackets\s+)(Quarter|Semi)-?Final/i
+    private readonly FINALS_REGEX = /^(?<remove>\s*Brackets\s+)((Quarter|Semi)-?)?Final/i
 
     private readonly DATE_FORMAT = {
         month: "long",
