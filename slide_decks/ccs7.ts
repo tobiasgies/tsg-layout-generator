@@ -13,6 +13,8 @@ export class ChallengeCupSeason7 {
     private readonly TITLE_SLIDE_3PLAYERS = "g2b3dc24f00e_1_0"
     private readonly RACE_SLIDE_3PLAYERS = "g2b1b1a75d12_0_0"
 
+    private readonly FINALS_REGEX = /^(?<remove>\s*Brackets\s+)(Quarter|Semi)-?Final/i
+
     private readonly DATE_FORMAT = {
         month: "long",
         day: "numeric",
@@ -30,9 +32,17 @@ export class ChallengeCupSeason7 {
         elementText.setText(newText);
     }
 
+    private filterRound(round: string) {
+        let match = round.match(this.FINALS_REGEX)
+        if (!match) {
+            return round;
+        }
+        return round.replace(match.groups.remove, "")
+    }
+
     public layoutTitleSlide(player1: Player, player2: Player, round: string) {
         const slide = this.presentation.getSlideById(this.TITLE_SLIDE_2PLAYERS);
-        this.replaceElementText(slide, "g2afd7ae3b2d_0_0", round);
+        this.replaceElementText(slide, "g2afd7ae3b2d_0_0", this.filterRound(round));
         this.replaceElementText(slide, "g207c0db1c30_0_0", player1.name);
         this.replaceElementText(slide, "g2afd7ae3b2d_0_1", `#${player1.rank}`);
         this.replaceElementText(slide, "g207c0db1c30_0_1", player2.name);
@@ -80,7 +90,7 @@ export class ChallengeCupSeason7 {
         this.replaceElementText(slide, "g20587f4170f_0_55", this.formatDate(player2Stats.bestTimeAt));
     }
 
-    public layoutRaceSlide(player1: Player, player2: Player, group: string) {
+    public layoutRaceSlide(player1: Player, player2: Player, round: string) {
         const slide = this.presentation.getSlideById(this.RACE_SLIDE_2PLAYERS);
         this.replaceElementText(slide, "g20587f4170f_0_24", player1.name);
         this.replaceElementText(slide, "g20587f4170f_0_25", player1.twitch);
@@ -96,7 +106,7 @@ export class ChallengeCupSeason7 {
         this.replaceElementText(slide, "g20587f4170f_0_29", reversedCountry);
         this.replaceElementText(slide, "g20f29317d6f_0_1", player2.pronouns?.toLowerCase() ?? "");
 
-        this.replaceElementText(slide, "g20587f4170f_0_23", group);
+        this.replaceElementText(slide, "g20587f4170f_0_23", this.filterRound(round));
     }
 
     public getPresentationLink() {
