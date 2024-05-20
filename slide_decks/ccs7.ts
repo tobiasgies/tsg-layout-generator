@@ -1,5 +1,5 @@
 import Slide = GoogleAppsScript.Slides.Slide;
-import {Player} from "../data/player";
+import {Player} from "../data/participants";
 import Presentation = GoogleAppsScript.Slides.Presentation;
 import {FaceOffStats} from "../stats_calculator";
 import {Duration} from "../util/duration";

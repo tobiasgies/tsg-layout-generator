@@ -26,3 +26,20 @@ export class Player {
         }`;
     }
 }
+
+export class Team {
+    readonly name: string;
+    readonly players: Array<Player>
+
+    constructor(name: string, players: Array<Player>) {
+        this.name = name;
+        this.players = players;
+    }
+
+    public toString(): string {
+        return `Team {
+            name: ${this.name},
+            players: ${this.players}
+        }`
+    }
+}

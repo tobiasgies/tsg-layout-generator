@@ -1,4 +1,4 @@
-export class ScheduledRace {
+export class SinglePlayerRace {
     readonly raceId: string;
     readonly title: string;
     readonly startTime: Date;

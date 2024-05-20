@@ -1,6 +1,6 @@
-import {Player} from "./data/player";
+import {Player} from "./data/participants";
 import {FaceOffStats} from "./stats_calculator";
-import {ScheduledRace} from "./data/scheduled_race";
+import {SinglePlayerRace} from "./data/races";
 import {Racetime} from "./clients/racetime";
 import {MidosHouse} from "./clients/midos_house";
 import {ChallengeCupSeason7} from "./slide_decks/ccs7";
@@ -38,7 +38,7 @@ function getCCS7Tab() {
 function getCCS7ScheduledRaces(tab: Sheet) {
     return tab.getRange(`A2:N300`).getValues()
         .filter(row => !!row[12])
-        .map(row => new ScheduledRace(
+        .map(row => new SinglePlayerRace(
             row[12], row[0], row[1], row[2], row[3], row[4], row[5],
             row[6],row[7], row[8], row[9], row[10], row[11], row[13]
         ));

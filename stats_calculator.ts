@@ -1,4 +1,4 @@
-import {Player} from "./data/player";
+import {Player} from "./data/participants";
 import {Duration, DurationUtils} from "./util/duration";
 import {Entrant, Race} from "./clients/racetime_data";
 
