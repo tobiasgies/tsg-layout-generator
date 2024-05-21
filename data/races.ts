@@ -1,3 +1,5 @@
+import {Team} from "./participants";
+
 export class SinglePlayerRace {
     readonly raceId: string;
     readonly title: string;
@@ -59,6 +61,40 @@ export class SinglePlayerRace {
             runner2Name: ${this.runner2Name},
             runner2QualifierRank: ${this.runner2QualifierRank},
             runner2Country: ${this.runner2Country},
+            round: ${this.round}
+        }`;
+    }
+}
+
+export class TeamRace {
+    readonly raceId: string;
+    readonly title: string;
+    readonly startTime: Date;
+    readonly team1: Team;
+    readonly team2: Team;
+    readonly round: string;
+
+    public constructor(raceId: string,
+                       title: string,
+                       startTime: Date,
+                       team1: Team,
+                       team2: Team,
+                       round: string) {
+        this.raceId = raceId;
+        this.title = title;
+        this.startTime = startTime;
+        this.team1 = team1;
+        this.team2 = team2;
+        this.round = round;
+    }
+
+    public toString(): string {
+        return `ScheduledRace {
+            raceId: ${this.raceId},
+            title: ${this.title},
+            startTime: ${this.startTime.toISOString()},
+            team1: ${this.team1},
+            team2: ${this.team2},
             round: ${this.round}
         }`;
     }
