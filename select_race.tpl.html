@@ -25,7 +25,7 @@
             google.script.run
                 .withSuccessHandler(openGeneratedSlides)
                 .withFailureHandler(displayErrorMessage)
-                .layoutCCS7(selectedRace)
+                .<?!= layoutFunction ?>(selectedRace)
         }
 
         function openGeneratedSlides(url) {

@@ -4,7 +4,7 @@ export class Player {
     readonly rank: number;
     readonly country: string;
     readonly racetimeId: string;
-    readonly pronouns: string;
+    public pronouns: string;
 
     constructor(name: string, twitch: string, rank: number, country: string, racetimeId: string, pronouns = null) {
         this.name = name;

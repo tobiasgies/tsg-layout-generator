@@ -1,11 +1,21 @@
-import {Player} from "./data/participants";
+import {Player, Team} from "./data/participants";
 import {FaceOffStats} from "./stats_calculator";
-import {SinglePlayerRace} from "./data/races";
+import {AbstractRace, SinglePlayerRace, TeamRace} from "./data/races";
 import {Racetime} from "./clients/racetime";
 import {MidosHouse} from "./clients/midos_house";
 import {ChallengeCupSeason7} from "./slide_decks/ccs7";
 import {Race} from "./clients/racetime_data";
 import Sheet = GoogleAppsScript.Spreadsheet.Sheet;
+import {CoOpSeason3} from "./slide_decks/coops3";
+
+type RaceLoader<T extends AbstractRace> = {
+    (tab: Sheet): T[]
+}
+
+const PROP_CCS7_TAB = "CCS7_TAB_ID";
+const PROP_CCS7_PRES = "CCS7_PRESENTATION_ID";
+const PROP_COOPS3_TAB = "COOPS3_TAB_ID";
+const PROP_COOPS3_PRES = "COOPS3_PRESENTATION_ID";
 
 const midos = new MidosHouse()
 
@@ -13,11 +23,24 @@ const midos = new MidosHouse()
  * Display a select dialog to start generating a restream layout for CCS7 races. Triggered from menu interaction.
  */
 function selectCCS7Race() {
+    const tab = getSheetsTabByProperty(PROP_CCS7_TAB);
+    selectRace(tab, getCCS7ScheduledRaces, "layoutCCS7")
+}
+
+/**
+ * Display a select dialog to start generating a restream layout for CCS7 races. Triggered from menu interaction.
+ */
+function selectCoOpS3Race() {
+    const tab = getSheetsTabByProperty(PROP_COOPS3_TAB);
+    selectRace(tab, getCoOpScheduledRaces, "layoutCoOpS3")
+}
+
+function selectRace<T extends AbstractRace>(tab: Sheet, raceLoader: RaceLoader<T>, layoutFunction: string) {
     try {
-        const tab = getCCS7Tab()
-        const scheduledRaces = getCCS7ScheduledRaces(tab)
+        const scheduledRaces = raceLoader(tab)
         let template = HtmlService.createTemplateFromFile("select_race.tpl")
         template.races = scheduledRaces
+        template.layoutFunction = layoutFunction
         SpreadsheetApp.getUi().showModelessDialog(template.evaluate(), "Select Race")
     } catch (e) {
         SpreadsheetApp.getUi().alert(`An error has occurred: ${e.message}`)
@@ -26,13 +49,22 @@ function selectCCS7Race() {
 
 }
 
-function getCCS7Tab() {
-    const sheetsTabId = parseInt(PropertiesService.getScriptProperties().getProperty("CCS7_TAB_ID"));
+function getSheetsTabByProperty(propertyName: string) {
+    const sheetsTabId = parseInt(PropertiesService.getScriptProperties().getProperty(propertyName));
     let tab = SpreadsheetApp.getActiveSpreadsheet().getSheets().find(it => it.getSheetId() == sheetsTabId)
     if (!tab) {
         throw new Error(`Could not find Google Sheets tab that contains race data. Tab ID ${sheetsTabId} not found.`)
     }
     return tab;
+}
+
+function getPresentationByProperty(propertyName: string) {
+    const presentationId = PropertiesService.getScriptProperties().getProperty(propertyName);
+    const presentation = SlidesApp.openById(presentationId);
+    if (!presentation) {
+        throw new Error(`Could not find Google Slides presentation containing layout. Presentation ${presentationId} not found.`)
+    }
+    return presentation;
 }
 
 function getCCS7ScheduledRaces(tab: Sheet) {
@@ -44,13 +76,21 @@ function getCCS7ScheduledRaces(tab: Sheet) {
         ));
 }
 
-function getCCS7Presentation() {
-    const presentationId = PropertiesService.getScriptProperties().getProperty("CCS7_PRESENTATION_ID");
-    const presentation = SlidesApp.openById(presentationId);
-    if (!presentation) {
-        throw new Error(`Could not find Google Slides presentation containing layout. Presentation ${presentationId} not found.`)
-    }
-    return presentation;
+function getCoOpScheduledRaces(tab: Sheet) {
+    return tab.getRange(`A2:X300`).getValues()
+        .filter(row => !!row[22])
+        .map(row => new TeamRace(
+            row[22], row[0], row[1],
+            new Team(row[3], [
+                new Player(row[6], null, null, row[7], row[5]),
+                new Player(row[10], null, null, row[11], row[9])
+            ]),
+            new Team(row[13], [
+                new Player(row[16], null, null, row[17], row[15]),
+                new Player(row[20], null, null, row[21], row[19])
+            ]),
+            row[23]
+        ));
 }
 
 function filterCCS7Races(race: Race): boolean {
@@ -64,8 +104,8 @@ function filterCCS7Races(race: Race): boolean {
  * @return The generated Google Slides' URL
  */
 function layoutCCS7(raceId: String): string {
-    const tab = getCCS7Tab();
-    const presentation = getCCS7Presentation();
+    const tab = getSheetsTabByProperty(PROP_CCS7_TAB);
+    const presentation = getPresentationByProperty(PROP_CCS7_PRES);
     const scheduledRace = getCCS7ScheduledRaces(tab).find(race => race.raceId == raceId)
     if (!scheduledRace) {
         throw new Error(`Could not find race with Race ID ${raceId}.`)
@@ -86,4 +126,32 @@ function layoutCCS7(raceId: String): string {
     ccs7.layoutRaceSlide(player1, player2, scheduledRace.round);
 
     return ccs7.getPresentationLink();
+}
+
+/**
+ * Generate Co-Op S3 layout for given race ID and return URL of presentation. Triggered from client-side javascript.
+ * @param raceId The race ID to generate a layout for
+ * @return The generated Google Slides' URL
+ */
+function layoutCoOpS3(raceId: String): string {
+    const tab = getSheetsTabByProperty(PROP_COOPS3_TAB);
+    const presentation = getPresentationByProperty(PROP_COOPS3_PRES);
+    const scheduledRace = getCoOpScheduledRaces(tab).find(race => race.raceId == raceId)
+    if (!scheduledRace) {
+        throw new Error(`Could not find race with Race ID ${raceId}.`)
+    }
+
+    // Fetch runner pronouns from Racetime
+    const racetime = new Racetime();
+    for (const player of scheduledRace.team1.players) {
+        player.pronouns = racetime.fetchUser(player.racetimeId).pronouns
+    }
+    for (const player of scheduledRace.team2.players) {
+        player.pronouns = racetime.fetchUser(player.racetimeId).pronouns
+    }
+    const slides = new CoOpSeason3(presentation);
+    slides.layoutTitleSlide(scheduledRace.team1, scheduledRace.team2, scheduledRace.round);
+    slides.layoutRaceSlide(scheduledRace.team1, scheduledRace.team2, scheduledRace.round);
+
+    return slides.getPresentationLink();
 }

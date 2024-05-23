@@ -1,9 +1,20 @@
 import {Team} from "./participants";
 
-export class SinglePlayerRace {
+export abstract class AbstractRace {
     readonly raceId: string;
     readonly title: string;
     readonly startTime: Date;
+    readonly round: string;
+
+    constructor(raceId: string, title: string, startTime: Date, round: string) {
+        this.raceId = raceId;
+        this.title = title;
+        this.startTime = startTime;
+        this.round = round;
+    }
+}
+
+export class SinglePlayerRace extends AbstractRace {
     readonly runner1Id: string;
     readonly runner1RacetimeId: string;
     readonly runner1Name: string;
@@ -14,7 +25,6 @@ export class SinglePlayerRace {
     readonly runner2Name: string;
     readonly runner2QualifierRank: number;
     readonly runner2Country: string;
-    readonly round: string;
 
     public constructor(raceId: string,
                        title: string,
@@ -30,9 +40,7 @@ export class SinglePlayerRace {
                        runner2QualifierRank: number,
                        runner2Country: string,
                        round: string) {
-        this.raceId = raceId;
-        this.title = title;
-        this.startTime = startTime;
+        super(raceId, title, startTime, round)
         this.runner1Id = runner1Id;
         this.runner1RacetimeId = runner1RacetimeId;
         this.runner1Name = runner1Name;
@@ -43,7 +51,6 @@ export class SinglePlayerRace {
         this.runner2Name = runner2Name;
         this.runner2QualifierRank = runner2QualifierRank;
         this.runner2Country = runner2Country;
-        this.round = round;
     }
 
     public toString(): string {
@@ -66,13 +73,9 @@ export class SinglePlayerRace {
     }
 }
 
-export class TeamRace {
-    readonly raceId: string;
-    readonly title: string;
-    readonly startTime: Date;
+export class TeamRace extends AbstractRace {
     readonly team1: Team;
     readonly team2: Team;
-    readonly round: string;
 
     public constructor(raceId: string,
                        title: string,
@@ -80,12 +83,9 @@ export class TeamRace {
                        team1: Team,
                        team2: Team,
                        round: string) {
-        this.raceId = raceId;
-        this.title = title;
-        this.startTime = startTime;
+        super(raceId, title, startTime, round)
         this.team1 = team1;
         this.team2 = team2;
-        this.round = round;
     }
 
     public toString(): string {
