@@ -1,0 +1,33 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    dependencies:
+      '@types/google-apps-script':
+        specifier: ^1.0.59
+        version: 1.0.78
+    devDependencies:
+      typescript:
+        specifier: ^4.9.5
+        version: 4.9.5
+
+packages:
+
+  '@types/google-apps-script@1.0.78':
+    resolution: {integrity: sha512-JOTy4vjBQ+HfdtJMkfcNF5WM8RC3R6SVp90bd8BCFvNWSaQ7zzP3abOLuJSCwQHjt0hWftofckvhwEcZjZ4hcQ==}
+
+  typescript@4.9.5:
+    resolution: {integrity: sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==}
+    engines: {node: '>=4.2.0'}
+    hasBin: true
+
+snapshots:
+
+  '@types/google-apps-script@1.0.78': {}
+
+  typescript@4.9.5: {}

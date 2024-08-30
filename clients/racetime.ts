@@ -80,7 +80,8 @@ export class Racetime {
      * @private
      */
     private racePageUrl(user: User, page: number): string {
-        return `${this.baseUrl}${user.url}/races/data?show_entrants=true&page=${page}`;
+        // This previously used user.url instead of user.id, but the new SEO URLs break this
+        return `${this.baseUrl}/user/${user.id}/races/data?show_entrants=true&page=${page}`;
     }
 
     /**
