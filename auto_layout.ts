@@ -3,7 +3,7 @@ import {FaceOffStats} from "./stats_calculator";
 import {AbstractRace, SinglePlayerRace, TeamRace} from "./data/races";
 import {Racetime} from "./clients/racetime";
 import {MidosHouse} from "./clients/midos_house";
-import {ChallengeCupSeason7} from "./slide_decks/ccs7";
+import {ChallengeCupSeason8} from "./slide_decks/ccs8";
 import {Race} from "./clients/racetime_data";
 import Sheet = GoogleAppsScript.Spreadsheet.Sheet;
 import {CoOpSeason3} from "./slide_decks/coops3";
@@ -13,8 +13,8 @@ type RaceLoader<T extends AbstractRace> = {
     (tab: Sheet): T[]
 }
 
-const PROP_CCS7_TAB = "CCS7_TAB_ID";
-const PROP_CCS7_PRES = "CCS7_PRESENTATION_ID";
+const PROP_CCS8_TAB = "CCS8_TAB_ID";
+const PROP_CCS8_PRES = "CCS8_PRESENTATION_ID";
 const PROP_COOPS3_TAB = "COOPS3_TAB_ID";
 const PROP_COOPS3_PRES = "COOPS3_PRESENTATION_ID";
 const PROP_TFBS3_TAB = "TFBS3_TAB_ID";
@@ -23,15 +23,15 @@ const PROP_TFBS3_PRES = "TFBS3_PRESENTATION_ID";
 const midos = new MidosHouse()
 
 /**
- * Display a select dialog to start generating a restream layout for CCS7 races. Triggered from menu interaction.
+ * Display a select dialog to start generating a restream layout for CCS8 races. Triggered from menu interaction.
  */
-function selectCCS7Race() {
-    const tab = getSheetsTabByProperty(PROP_CCS7_TAB);
-    selectRace(tab, getScheduledSinglePlayerRace, "layoutCCS7")
+function selectCCS8Race() {
+    const tab = getSheetsTabByProperty(PROP_CCS8_TAB);
+    selectRace(tab, getScheduledSinglePlayerRace, "layoutCCS8")
 }
 
 /**
- * Display a select dialog to start generating a restream layout for CCS7 races. Triggered from menu interaction.
+ * Display a select dialog to start generating a restream layout for Co-Op S3 races. Triggered from menu interaction.
  */
 function selectCoOpS3Race() {
     const tab = getSheetsTabByProperty(PROP_COOPS3_TAB);
@@ -39,7 +39,7 @@ function selectCoOpS3Race() {
 }
 
 /**
- * Display a select dialog to start generating a restream layout for CCS7 races. Triggered from menu interaction.
+ * Display a select dialog to start generating a restream layout for TFB S3 races. Triggered from menu interaction.
  */
 function selectTFBS3Race() {
     const tab = getSheetsTabByProperty(PROP_TFBS3_TAB);
@@ -104,7 +104,7 @@ function getCoOpScheduledRaces(tab: Sheet) {
         ));
 }
 
-function filterCCS7Races(race: Race): boolean {
+function filterCCS8Races(race: Race): boolean {
     return (race.goal.custom == false && race.goal.name == "Standard Ruleset") ||
         (race.goal.custom == true && midos.isStandardGoal(race.goal.name))
 }
@@ -114,13 +114,13 @@ function filterTFBS3Races(race: Race): boolean {
 }
 
 /**
- * Generate CCS7 layout for given race ID and return URL of presentation. Triggered from client-side javascript.
+ * Generate CCS8 layout for given race ID and return URL of presentation. Triggered from client-side javascript.
  * @param raceId The race ID to generate a layout for
  * @return The generated Google Slides' URL
  */
-function layoutCCS7(raceId: String): string {
-    const tab = getSheetsTabByProperty(PROP_CCS7_TAB);
-    const presentation = getPresentationByProperty(PROP_CCS7_PRES);
+function layoutCCS8(raceId: String): string {
+    const tab = getSheetsTabByProperty(PROP_CCS8_TAB);
+    const presentation = getPresentationByProperty(PROP_CCS8_PRES);
     const scheduledRace = getScheduledSinglePlayerRace(tab).find(race => race.raceId == raceId)
     if (!scheduledRace) {
         throw new Error(`Could not find race with Race ID ${raceId}.`)
@@ -134,13 +134,13 @@ function layoutCCS7(raceId: String): string {
     const player2 = new Player(scheduledRace.runner2Name, user2.twitch_name, scheduledRace.runner2QualifierRank, scheduledRace.runner2Country, user2.id, user2.pronouns);
     const races: Race[] = [user1, user2].flatMap(racetime.fetchUserRaces.bind(racetime));
     const racesDedup = [... new Set(races)];
-    const stats = FaceOffStats.fromRacetime(racesDedup, player1, player2, filterCCS7Races);
-    const ccs7 = new ChallengeCupSeason7(presentation);
-    ccs7.layoutTitleSlide(player1, player2, scheduledRace.round);
-    ccs7.layoutStatsSlide(stats);
-    ccs7.layoutRaceSlide(player1, player2, scheduledRace.round);
+    const stats = FaceOffStats.fromRacetime(racesDedup, player1, player2, filterCCS8Races);
+    const slides = new ChallengeCupSeason8(presentation);
+    slides.layoutTitleSlide(player1, player2, scheduledRace.round);
+    slides.layoutStatsSlide(stats);
+    slides.layoutRaceSlide(player1, player2, scheduledRace.round);
 
-    return ccs7.getPresentationLink();
+    return slides.getPresentationLink();
 }
 
 /**
@@ -165,12 +165,12 @@ function layoutTFBS3(raceId: String): string {
     const races: Race[] = [user1, user2].flatMap(racetime.fetchUserRaces.bind(racetime));
     const racesDedup = [... new Set(races)];
     const stats = FaceOffStats.fromRacetime(racesDedup, player1, player2, filterTFBS3Races);
-    const ccs7 = new TriforceBlitzSeason3(presentation);
-    ccs7.layoutTitleSlide(player1, player2, scheduledRace.round);
-    ccs7.layoutStatsSlide(stats);
-    ccs7.layoutRaceSlide(player1, player2, scheduledRace.round);
+    const slides = new TriforceBlitzSeason3(presentation);
+    slides.layoutTitleSlide(player1, player2, scheduledRace.round);
+    slides.layoutStatsSlide(stats);
+    slides.layoutRaceSlide(player1, player2, scheduledRace.round);
 
-    return ccs7.getPresentationLink();
+    return slides.getPresentationLink();
 }
 
 /**

@@ -4,7 +4,7 @@ import Presentation = GoogleAppsScript.Slides.Presentation;
 import {FaceOffStats} from "../stats_calculator";
 import {Duration} from "../util/duration";
 
-export class ChallengeCupSeason7 {
+export class ChallengeCupSeason8 {
     private readonly presentation: Presentation;
 
     private readonly TITLE_SLIDE_2PLAYERS = "g10aa2c5d08b_0_13"
