@@ -13,14 +13,6 @@ export class ChallengeCupSeason8 {
     private readonly TITLE_SLIDE_3PLAYERS = "g2b3dc24f00e_1_0"
     private readonly RACE_SLIDE_3PLAYERS = "g2b1b1a75d12_0_0"
 
-    private readonly FINALS_REGEX = /^(?<remove>\s*Brackets\s+)((Quarter|Semi)-?)?Final/i
-
-    private readonly DATE_FORMAT = {
-        month: "long",
-        day: "numeric",
-        year: "numeric"
-    }
-
     public constructor(presentation: Presentation) {
         this.presentation = presentation;
     }
@@ -33,11 +25,16 @@ export class ChallengeCupSeason8 {
     }
 
     private filterRound(round: string) {
-        let match = round.match(this.FINALS_REGEX)
-        if (!match) {
-            return round;
+        if (round.startsWith("Groups ") && round.endsWith("Tiebreaker")) {
+            return round.substring(7);
+        } else if (round.startsWith("Groups ")) {
+            return "Group Stage"
+        } else if (round.startsWith("Bracket ")) {
+            return round.substring(8)
+        } else {
+            // Fallback
+            return round
         }
-        return round.replace(match.groups.remove, "")
     }
 
     private filterCountry(country: string) {
@@ -85,15 +82,15 @@ export class ChallengeCupSeason8 {
         this.replaceElementText(slide, "g3207e63c0e4_0_12", this.formatPercent(faceOffStats.drawPercentage));
         this.replaceElementText(slide, "g3207e63c0e4_0_2", faceOffStats.encounters.toString());
 
-        this.replaceElementText(slide, "g20587f416fd_0_46", player1Stats.first.toString());
-        this.replaceElementText(slide, "g20587f416fd_0_47", player1Stats.second.toString());
-        this.replaceElementText(slide, "g20587f416fd_0_48", player1Stats.third.toString());
-        this.replaceElementText(slide, "g20587f416fd_0_49", player1Stats.forfeits.toString());
+        this.replaceElementText(slide, "g20587f416fd_0_46", this.formatPlacement(player1Stats.first, player1Stats.joined));
+        this.replaceElementText(slide, "g20587f416fd_0_47", this.formatPlacement(player1Stats.second, player1Stats.joined));
+        this.replaceElementText(slide, "g20587f416fd_0_48", this.formatPlacement(player1Stats.third, player1Stats.joined));
+        this.replaceElementText(slide, "g20587f416fd_0_49", this.formatPlacement(player1Stats.forfeits, player1Stats.joined));
 
-        this.replaceElementText(slide, "g20587f416fd_0_50", player2Stats.first.toString());
-        this.replaceElementText(slide, "g20587f416fd_0_51", player2Stats.second.toString());
-        this.replaceElementText(slide, "g20587f416fd_0_52", player2Stats.third.toString());
-        this.replaceElementText(slide, "g20587f416fd_0_53", player2Stats.forfeits.toString());
+        this.replaceElementText(slide, "g20587f416fd_0_50", this.formatPlacement(player2Stats.first, player2Stats.joined));
+        this.replaceElementText(slide, "g20587f416fd_0_51", this.formatPlacement(player2Stats.second, player2Stats.joined));
+        this.replaceElementText(slide, "g20587f416fd_0_52", this.formatPlacement(player2Stats.third, player2Stats.joined));
+        this.replaceElementText(slide, "g20587f416fd_0_53", this.formatPlacement(player2Stats.forfeits, player2Stats.joined));
     }
 
     public layoutRaceSlide(player1: Player, player2: Player, round: string) {
@@ -120,5 +117,9 @@ export class ChallengeCupSeason8 {
 
     private formatPercent(percent: number) {
         return (Math.round(percent * 10) / 10).toFixed(1) + "%";
+    }
+
+    private formatPlacement(placedCount: number, joinedTotal: number) {
+        return `${placedCount}\n${this.formatPercent(placedCount / joinedTotal * 100)}`;
     }
 }
