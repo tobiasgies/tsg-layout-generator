@@ -106,6 +106,7 @@ function getCoOpScheduledRaces(tab: Sheet) {
 
 function filterCCS8Races(race: Race): boolean {
     return (race.goal.custom == false && race.goal.name == "Standard Ruleset") ||
+        (race.goal.custom == false && race.goal.name == "Standard Ruleset (pre 10/24)") ||
         (race.goal.custom == true && midos.isStandardGoal(race.goal.name))
 }
 
