@@ -8,7 +8,7 @@ export class ChallengeCupSeason8 {
     private readonly presentation: Presentation;
 
     private readonly TITLE_SLIDE_2PLAYERS = "g2abcd4d5f69_0_3"
-    private readonly STATS_SLIDE_2PLAYERS = "g20587f416fd_0_38"
+    private readonly STATS_SLIDE_2PLAYERS = "g324bcf5deeb_0_0"
     private readonly RACE_SLIDE_2PLAYERS = "g2a4cdfc0918_0_0"
     private readonly TITLE_SLIDE_3PLAYERS = "g2b3dc24f00e_1_0"
     private readonly RACE_SLIDE_3PLAYERS = "g2b1b1a75d12_0_0"
@@ -60,37 +60,35 @@ export class ChallengeCupSeason8 {
         let player2Stats = faceOffStats.player2Stats;
 
         const slide = this.presentation.getSlideById(this.STATS_SLIDE_2PLAYERS);
-        this.replaceElementText(slide, "g320779e2ba3_0_8", player1Stats.player.name);
-        this.replaceElementText(slide, "g2a4cca0b470_1_23", this.filterCountry(player1Stats.player.country));
-        this.replaceElementText(slide, "g20587f416fd_0_42", player1Stats.player.twitch);
-        this.replaceElementText(slide, "g20587f416fd_0_59", `#${player1Stats.player.rank}`);
-        this.replaceElementText(slide, "g2a4cca0b470_1_21", player1Stats.player.pronouns?.toLowerCase() ?? "");
-        this.replaceElementText(slide, "g320779e2ba3_0_9", player2Stats.player.name);
-        this.replaceElementText(slide, "g2a4cca0b470_1_24", this.filterCountry(player2Stats.player.country));
-        this.replaceElementText(slide, "g20587f416fd_0_45", player2Stats.player.twitch);
-        this.replaceElementText(slide, "g20587f416fd_0_58", `#${player2Stats.player.rank}`);
-        this.replaceElementText(slide, "g2a4cca0b470_1_22", player2Stats.player.pronouns?.toLowerCase() ?? "");
+        this.replaceElementText(slide, "g324bcf5deeb_0_25", player1Stats.player.name);
+        this.replaceElementText(slide, "g324bcf5deeb_0_47", this.filterCountry(player1Stats.player.country));
+        this.replaceElementText(slide, "g324bcf5deeb_0_2", player1Stats.player.twitch);
+        this.replaceElementText(slide, "g324bcf5deeb_0_44", `#${player1Stats.player.rank}`);
+        this.replaceElementText(slide, "g324bcf5deeb_0_45", player1Stats.player.pronouns?.toLowerCase() ?? "");
+        this.replaceElementText(slide, "g324bcf5deeb_0_26", player2Stats.player.name);
+        this.replaceElementText(slide, "g324bcf5deeb_0_48", this.filterCountry(player2Stats.player.country));
+        this.replaceElementText(slide, "g324bcf5deeb_0_4", player2Stats.player.twitch);
+        this.replaceElementText(slide, "g324bcf5deeb_0_43", `#${player2Stats.player.rank}`);
+        this.replaceElementText(slide, "g324bcf5deeb_0_46", player2Stats.player.pronouns?.toLowerCase() ?? "");
 
-        this.replaceElementText(slide, "g3207e63c0e4_0_15", player1Stats.joined.toString());
-        this.replaceElementText(slide, "g3207e63c0e4_0_13", player2Stats.joined.toString());
+        this.replaceElementText(slide, "g324bcf5deeb_0_24", player1Stats.joined.toString());
+        this.replaceElementText(slide, "g324bcf5deeb_0_22", player2Stats.joined.toString());
 
-        this.replaceElementText(slide, "g3207e63c0e4_0_7", faceOffStats.player1Wins.toString());
-        this.replaceElementText(slide, "g3207e63c0e4_0_10", this.formatPercent(faceOffStats.player1WinPercentage));
-        this.replaceElementText(slide, "g3207e63c0e4_0_8", faceOffStats.player2Wins.toString());
-        this.replaceElementText(slide, "g3207e63c0e4_0_11", this.formatPercent(faceOffStats.player2WinPercentage));
-        this.replaceElementText(slide, "g3207e63c0e4_0_9", faceOffStats.draws.toString());
-        this.replaceElementText(slide, "g3207e63c0e4_0_12", this.formatPercent(faceOffStats.drawPercentage));
-        this.replaceElementText(slide, "g3207e63c0e4_0_2", faceOffStats.encounters.toString());
+        this.replaceElementText(slide, "g324bcf5deeb_0_18", faceOffStats.player1Wins.toString());
+        this.replaceElementText(slide, "g324bcf5deeb_0_20", this.formatPercent(faceOffStats.player1WinPercentage));
+        this.replaceElementText(slide, "g324bcf5deeb_0_19", faceOffStats.player2Wins.toString());
+        this.replaceElementText(slide, "g324bcf5deeb_0_21", this.formatPercent(faceOffStats.player2WinPercentage));
+        this.replaceElementText(slide, "g324bcf5deeb_0_16", faceOffStats.encounters.toString());
 
-        this.replaceElementText(slide, "g20587f416fd_0_46", this.formatPlacement(player1Stats.first, player1Stats.joined));
-        this.replaceElementText(slide, "g20587f416fd_0_47", this.formatPlacement(player1Stats.second, player1Stats.joined));
-        this.replaceElementText(slide, "g20587f416fd_0_48", this.formatPlacement(player1Stats.third, player1Stats.joined));
-        this.replaceElementText(slide, "g20587f416fd_0_49", this.formatPlacement(player1Stats.forfeits, player1Stats.joined));
+        this.replaceElementText(slide, "g324bcf5deeb_0_5", this.formatPlacement(player1Stats.first, player1Stats.joined));
+        this.replaceElementText(slide, "g324bcf5deeb_0_6", this.formatPlacement(player1Stats.second, player1Stats.joined));
+        this.replaceElementText(slide, "g324bcf5deeb_0_7", this.formatPlacement(player1Stats.third, player1Stats.joined));
+        this.replaceElementText(slide, "g324bcf5deeb_0_8", this.formatPlacement(player1Stats.forfeits, player1Stats.joined));
 
-        this.replaceElementText(slide, "g20587f416fd_0_50", this.formatPlacement(player2Stats.first, player2Stats.joined));
-        this.replaceElementText(slide, "g20587f416fd_0_51", this.formatPlacement(player2Stats.second, player2Stats.joined));
-        this.replaceElementText(slide, "g20587f416fd_0_52", this.formatPlacement(player2Stats.third, player2Stats.joined));
-        this.replaceElementText(slide, "g20587f416fd_0_53", this.formatPlacement(player2Stats.forfeits, player2Stats.joined));
+        this.replaceElementText(slide, "g324bcf5deeb_0_9", this.formatPlacement(player2Stats.first, player2Stats.joined));
+        this.replaceElementText(slide, "g324bcf5deeb_0_10", this.formatPlacement(player2Stats.second, player2Stats.joined));
+        this.replaceElementText(slide, "g324bcf5deeb_0_11", this.formatPlacement(player2Stats.third, player2Stats.joined));
+        this.replaceElementText(slide, "g324bcf5deeb_0_12", this.formatPlacement(player2Stats.forfeits, player2Stats.joined));
     }
 
     public layoutRaceSlide(player1: Player, player2: Player, round: string) {
