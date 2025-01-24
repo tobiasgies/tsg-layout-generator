@@ -19,6 +19,9 @@ export class ChallengeCupSeason8 {
 
     private replaceElementText(slide: Slide, elementId: string, newText: string) {
         const pageElement = slide.getPageElementById(elementId);
+        if (!pageElement) {
+            throw new Error(`Could not find text element ${elementId} in slide ${slide.getObjectId()}. This needs to be fixed in the generator code.`);
+        }
         const elementShape = pageElement.asShape();
         const elementText = elementShape.getText();
         elementText.setText(newText);
@@ -44,6 +47,9 @@ export class ChallengeCupSeason8 {
 
     public layoutTitleSlide(player1: Player, player2: Player, round: string) {
         const slide = this.presentation.getSlideById(this.TITLE_SLIDE_2PLAYERS);
+        if (!slide) {
+            throw new Error(`Could not find title slide (ID:${this.TITLE_SLIDE_2PLAYERS}). This needs to be fixed in the generator code.`);
+        }
         this.replaceElementText(slide, "g2a4cca0b470_1_2", this.filterRound(round));
         this.replaceElementText(slide, "g320779e2ba3_0_0", player1.name);
         this.replaceElementText(slide, "g2a4cca0b470_1_15", this.filterCountry(player1.country));
@@ -60,6 +66,9 @@ export class ChallengeCupSeason8 {
         let player2Stats = faceOffStats.player2Stats;
 
         const slide = this.presentation.getSlideById(this.STATS_SLIDE_2PLAYERS);
+        if (!slide) {
+            throw new Error(`Could not find stats slide (ID:${this.STATS_SLIDE_2PLAYERS}). This needs to be fixed in the generator code.`);
+        }
         this.replaceElementText(slide, "g324bcf5deeb_0_25", player1Stats.player.name);
         this.replaceElementText(slide, "g324bcf5deeb_0_47", this.filterCountry(player1Stats.player.country));
         this.replaceElementText(slide, "g324bcf5deeb_0_2", player1Stats.player.twitch);
@@ -93,6 +102,9 @@ export class ChallengeCupSeason8 {
 
     public layoutRaceSlide(player1: Player, player2: Player, round: string) {
         const slide = this.presentation.getSlideById(this.RACE_SLIDE_2PLAYERS);
+        if (!slide) {
+            throw new Error(`Could not find race slide (ID:${this.RACE_SLIDE_2PLAYERS}). This needs to be fixed in the generator code.`);
+        }
         this.replaceElementText(slide, "g2a4cdfc0918_0_3", player1.name);
         this.replaceElementText(slide, "g2a4cdfc0918_0_5", player1.twitch);
         this.replaceElementText(slide, "g2a4cdfc0918_0_11", `#${player1.rank}`);

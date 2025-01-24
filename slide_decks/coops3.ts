@@ -14,6 +14,9 @@ export class CoOpSeason3 {
 
     private replaceElementText(slide: Slide, elementId: string, newText: string) {
         const pageElement = slide.getPageElementById(elementId);
+        if (!pageElement) {
+            throw new Error(`Could not find text element ${elementId} in slide ${slide.getObjectId()}. This needs to be fixed in the generator code.`);
+        }
         const elementShape = pageElement.asShape();
         const elementText = elementShape.getText();
         elementText.setText(newText);
@@ -34,6 +37,9 @@ export class CoOpSeason3 {
 
     public layoutTitleSlide(team1: Team, team2: Team, round: string) {
         const slide = this.presentation.getSlideById(this.TITLE_SLIDE_4PLAYERS);
+        if (!slide) {
+            throw new Error(`Could not find title slide (ID:${this.TITLE_SLIDE_4PLAYERS}). This needs to be fixed in the generator code.`);
+        }
         const title = this.titleText(team1, team2, round)
         this.replaceElementText(slide, "g29ca38acb16_0_5", title);
     }
@@ -53,6 +59,9 @@ export class CoOpSeason3 {
 
     public layoutRaceSlide(team1: Team, team2: Team, round: string) {
         const slide = this.presentation.getSlideById(this.RACE_SLIDE_4PLAYERS);
+        if (!slide) {
+            throw new Error(`Could not find race slide (ID:${this.RACE_SLIDE_4PLAYERS}). This needs to be fixed in the generator code.`);
+        }
         this.replaceElementText(slide, "g2db76eaf1a8_0_19", this.titleText(team1, team2, round));
 
         // TODO add flags to names
