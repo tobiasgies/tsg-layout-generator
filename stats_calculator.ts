@@ -55,8 +55,8 @@ export class FaceOffStats {
             if (!raceFilter(current)) {
                 return acc;
             }
-            const p1Entrant = current.entrants.find((entrant) => entrant.user.id == p1.racetimeId);
-            const p2Entrant = current.entrants.find((entrant) => entrant.user.id == p2.racetimeId);
+            const p1Entrant = current.entrants.find((entrant) => entrant.user?.id == p1.racetimeId);
+            const p2Entrant = current.entrants.find((entrant) => entrant.user?.id == p2.racetimeId);
 
             if (!!p1Entrant && !!p2Entrant) {
                 FaceOffStats.updateFaceOffStats(acc, p1Entrant, p2Entrant);

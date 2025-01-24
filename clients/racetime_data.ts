@@ -60,7 +60,7 @@ export type EntrantStatus = {
 }
 
 export type Entrant = {
-    readonly user: User;
+    readonly user?: User;
     readonly team?: Team;
     readonly status: EntrantStatus;
     readonly place?: number;
